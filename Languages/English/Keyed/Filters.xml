@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LanguageData>
+
+  <COCTF_allowedMeatAmount>{0} meat yield</COCTF_allowedMeatAmount>
+  <COCTF_allowedMarketValue>{0} market value</COCTF_allowedMarketValue>
+  <COCTF_allowedBeauty>{0} beauty</COCTF_allowedBeauty>
+  <COCTF_allowedFlammability>{0} flammability</COCTF_allowedFlammability>
+  <COCTF_allowedWorkToMake>{0} work to make</COCTF_allowedWorkToMake>
+
+</LanguageData>
