@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Harmony;
 using HugsLib;
 using HugsLib.Settings;
 using HugsLib.Utils;
 using RimWorld;
+using UnityEngine.SceneManagement;
 using Verse;
 
 namespace CustomThingFilters
@@ -42,6 +44,11 @@ namespace CustomThingFilters
                     transpiler: new HarmonyMethod(typeof(BugFixes), nameof(BugFixes.FilteredProductStackCounts)));
 
             CustomFilter.DefsLoaded();
+        }
+
+        public override void SceneLoaded(Scene scene)
+        {
+            CustomFilter.SceneLoaded(scene);
         }
 
         static void Debug(params object[] strings)
@@ -82,46 +89,85 @@ namespace CustomThingFilters
 
         class CustomFilter : IExposable
         {
-            static readonly float maxMeatAmount = ThingCategoryDefOf.Corpses.ThisAndChildCategoryDefs.SelectMany(x => x.childThingDefs)
-                .Where(x => x.ingestible?.sourceDef?.race?.meatDef != null).Max(x => x.ingestible.sourceDef.GetStatValueAbstract(StatDefOf.MeatAmount));
+            static readonly List<ThingDefStatRange> thingDefStatsWRange = new List<ThingDefStatRange>();
 
-            static readonly float maxMarketValue = DefDatabase<ThingDef>.AllDefs.Max(x => x.GetStatValueAbstract(StatDefOf.MarketValue));
-            static readonly float minBeauty = DefDatabase<ThingDef>.AllDefs.Min(x => x.GetStatValueAbstract(StatDefOf.Beauty));
-            static readonly float maxBeauty = DefDatabase<ThingDef>.AllDefs.Max(x => x.GetStatValueAbstract(StatDefOf.Beauty));
-            static readonly float maxFlammability = DefDatabase<ThingDef>.AllDefs.Max(x => x.GetStatValueAbstract(StatDefOf.Flammability));
-            static readonly float maxWorkToMake = DefDatabase<ThingDef>.AllDefs.Max(x => x.GetStatValueAbstract(StatDefOf.WorkToMake));
+            static readonly List<StatDef> needWeaponStats = new[] {
+                "RangedWeapon_LongDPS", "RangedWeapon_MediumDPS", "RangedWeapon_ShortDPS", "RangedWeapon_TouchDPS"
+            }.Select(DefDatabase<StatDef>.GetNamedSilentFail).Where(x => x != null).ToList();
 
-            public readonly List<FilterRange> filterRanges = new List<FilterRange> {
-                new FilterIntRange(
-                    "COCTF_allowedMeatAmount", 0, maxMeatAmount,
-                    (range, t) => t.def.ingestible?.sourceDef?.race?.meatDef == null || range.Includes(t.def.ingestible.sourceDef.GetStatValueAbstract(StatDefOf.MeatAmount))),
-                new FilterIntRange(
-                    "COCTF_allowedMarketValue", 0, maxMarketValue,
-                    (range, t) => range.Includes(t.GetStatValue(StatDefOf.MarketValue))),
-                new FilterIntRange(
-                    "COCTF_allowedBeauty", minBeauty, maxBeauty,
-                    (range, t) => range.Includes(t.GetStatValue(StatDefOf.Beauty))),
-                new FilterIntRange(
-                    "COCTF_allowedFlammability", 0, maxFlammability,
-                    (range, t) => range.Includes(t.GetStatValue(StatDefOf.Flammability))),
-                new FilterIntRange(
-                    "COCTF_allowedWorkToMake", 0, maxWorkToMake,
-                    (range, t) => range.Includes(t.GetStatValue(StatDefOf.WorkToMake)))
+            static readonly List<StatDef> explicitlyIntegers = new List<StatDef> {
+                StatDefOf.MaxHitPoints, StatDefOf.Beauty, StatDefOf.TrapMeleeDamage, StatDefOf.CarryingCapacity, StatDefOf.MeatAmount, StatDefOf.LeatherAmount, StatDefOf.MinimumHandlingSkill
             };
+
+            public readonly List<FilterRange> filterRanges = new List<FilterRange>();
+
+            public CustomFilter()
+            {
+                foreach (var stat in thingDefStatsWRange) {
+                    FilterRange filterRange;
+                    if (stat.statDef.toStringStyle == ToStringStyle.Integer)
+                        filterRange = new FilterIntRange(
+                            $"COCTF_allowed{stat.statDef.defName}", stat.statDef.label, stat.min, stat.max, (range, thing) => range.Includes(thing.def.GetStatValueAbstract(stat.statDef)));
+                    else
+                        filterRange = new FilterFloatRange(
+                            $"COCTF_allowed{stat.statDef.defName}", stat.statDef.label, stat.statDef.toStringStyle, stat.min, stat.max,
+                            (range, thing) => range.Includes(thing.def.GetStatValueAbstract(stat.statDef)));
+                    filterRanges.Add(filterRange);
+                }
+            }
 
             public void ExposeData()
             {
                 foreach (var range in filterRanges) {
                     if (Scribe.mode == LoadSaveMode.Saving && range.AtDefault()) continue;
                     if (range is FilterIntRange intRange)
-                        Scribe_Values.Look(ref intRange.inner, intRange.label, new IntRange(-9999999, -9999999));
+                        Scribe_Values.Look(ref intRange.inner, intRange.saveLabel, new IntRange(-9999999, -9999999));
                     if (range is FilterFloatRange floatRange)
-                        Scribe_Values.Look(ref floatRange.inner, floatRange.label, new FloatRange(-9999999f, -9999999f));
+                        Scribe_Values.Look(ref floatRange.inner, floatRange.saveLabel, new FloatRange(-9999999f, -9999999f));
                 }
             }
 
             public static void DefsLoaded()
             {
+                var pawnCategories = new[] {
+                    StatCategoryDefOf.PawnSocial, StatCategoryDefOf.PawnCombat, StatCategoryDefOf.PawnMisc, StatCategoryDefOf.PawnWork, StatCategoryDefOf.BasicsPawn
+                };
+                var needWeaponAndPawnStats = new[] {
+                    "RangedWeapon_LongDPSPawn", "RangedWeapon_MediumDPSPawn", "RangedWeapon_ShortDPSPawn", "RangedWeapon_TouchDPSPawn"
+                }.Select(DefDatabase<StatDef>.GetNamedSilentFail).Where(x => x != null).ToList();
+
+                foreach (var statDef in DefDatabase<StatDef>.AllDefs.Where(x => !pawnCategories.Contains(x.category) && !needWeaponAndPawnStats.Contains(x) && !needWeaponStats.Contains(x)))
+                    AddStatDefs(statDef);
+            }
+
+            public static void SceneLoaded(Scene scene)
+            {
+                if (!GenScene.InPlayScene)
+                    return;
+
+                foreach (var statDef in DefDatabase<StatDef>.AllDefs.Where(x => needWeaponStats.Contains(x)))
+                    AddStatDefs(statDef, true);
+            }
+
+            static void AddStatDefs(StatDef statDef, bool needWeapon = false)
+            {
+                float? min = null, max = null;
+                var foundFraction = false;
+                foreach (var thingDef in DefDatabase<ThingDef>.AllDefsListForReading) {
+                    if (needWeapon && (thingDef.Verbs.Count == 0 || thingDef.Verbs[0].defaultProjectile?.projectile == null)) continue;
+                    var stat = thingDef.GetStatValueAbstract(statDef);
+                    if (!foundFraction && Math.Abs(stat % 1) > TOLERANCE) foundFraction = true;
+                    min = Math.Min(min ?? stat, stat);
+                    max = Math.Max(max ?? stat, stat);
+                }
+
+                if (min == null || float.IsNaN((float) min) || min.Equals(max)) return;
+                Log.Warning($"{statDef} {min} {max} {statDef.toStringStyle}");
+
+                if (statDef.toStringStyle == default && !explicitlyIntegers.Contains(statDef) && foundFraction)
+                    statDef.toStringStyle = ToStringStyle.FloatTwo;
+
+                thingDefStatsWRange.Add(new ThingDefStatRange {statDef = statDef, min = (float) min, max = (float) max});
             }
 
             public bool IsAllowed(Thing t)
@@ -130,6 +176,17 @@ namespace CustomThingFilters
                     if (!range.IsAllowed(t))
                         return false;
                 return true;
+            }
+
+            struct ThingDefStatRange
+            {
+                public StatDef statDef;
+                public float min, max;
+
+                public override string ToString()
+                {
+                    return $"{statDef} {min} {max}";
+                }
             }
         }
     }

@@ -7,16 +7,16 @@ namespace CustomThingFilters
     partial class CustomThingFilters
     {
         const float TOLERANCE = 1E-05f;
+        static bool customRangeWidget;
 
         public abstract class FilterRange : ICloneable
         {
             protected Func<FilterRange, Thing, bool> isAllowed;
+            public string saveLabel, label;
 
-            // export AND language key
-            public string label;
-
-            protected FilterRange(string label, Func<FilterRange, Thing, bool> isAllowed)
+            protected FilterRange(string saveLabel, string label, Func<FilterRange, Thing, bool> isAllowed)
             {
+                this.saveLabel = saveLabel;
                 this.label = label;
                 this.isAllowed = isAllowed;
             }
@@ -41,11 +41,11 @@ namespace CustomThingFilters
             public readonly int min, max;
             public IntRange inner;
 
-            public FilterIntRange(string label, float min, float max, Func<FilterRange, Thing, bool> isAllowed) : this(label, (int) min, (int) max, isAllowed)
+            public FilterIntRange(string saveLabel, string label, float min, float max, Func<FilterRange, Thing, bool> isAllowed) : this(saveLabel, label, (int) min, (int) max, isAllowed)
             {
             }
 
-            public FilterIntRange(string label, int min, int max, Func<FilterRange, Thing, bool> isAllowed) : base(label, isAllowed)
+            public FilterIntRange(string saveLabel, string label, int min, int max, Func<FilterRange, Thing, bool> isAllowed) : base(saveLabel, label, isAllowed)
             {
                 this.min = min;
                 this.max = max;
@@ -69,7 +69,9 @@ namespace CustomThingFilters
 
             public override void Draw(Rect rect)
             {
+                customRangeWidget = true;
                 Widgets.IntRange(rect, (int) rect.y, ref inner, min, max, label);
+                customRangeWidget = false;
             }
 
             public override void Load()
@@ -83,7 +85,7 @@ namespace CustomThingFilters
 
             public override object Clone()
             {
-                return new FilterIntRange(label, min, max, isAllowed) {inner = {min = inner.min, max = inner.max}};
+                return new FilterIntRange(saveLabel, label, min, max, isAllowed) {inner = {min = inner.min, max = inner.max}};
             }
 
             public override string ToString()
@@ -95,10 +97,12 @@ namespace CustomThingFilters
         public class FilterFloatRange : FilterRange
         {
             public readonly float min, max;
+            readonly ToStringStyle toStringStyle;
             public FloatRange inner;
 
-            public FilterFloatRange(string label, float min, float max, Func<FilterRange, Thing, bool> isAllowed) : base(label, isAllowed)
+            public FilterFloatRange(string saveLabel, string label, ToStringStyle toStringStyle, float min, float max, Func<FilterRange, Thing, bool> isAllowed) : base(saveLabel, label, isAllowed)
             {
+                this.toStringStyle = toStringStyle;
                 this.min = min;
                 this.max = max;
                 inner = new FloatRange(min, max);
@@ -121,7 +125,9 @@ namespace CustomThingFilters
 
             public override void Draw(Rect rect)
             {
-                Widgets.FloatRange(rect, (int) rect.y, ref inner, min, max, label, ToStringStyle.Integer);
+                customRangeWidget = true;
+                Widgets.FloatRange(rect, (int) rect.y, ref inner, min, max, label, toStringStyle);
+                customRangeWidget = false;
             }
 
             public override void Load()
@@ -135,7 +141,7 @@ namespace CustomThingFilters
 
             public override object Clone()
             {
-                return new FilterFloatRange(label, min, max, isAllowed) {inner = {min = inner.min, max = inner.max}};
+                return new FilterFloatRange(saveLabel, label, toStringStyle, min, max, isAllowed) {inner = {min = inner.min, max = inner.max}};
             }
 
             public override string ToString()
