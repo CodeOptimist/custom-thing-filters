@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Harmony;
 using HugsLib;
@@ -104,14 +105,9 @@ namespace CustomThingFilters
             public CustomFilter()
             {
                 foreach (var stat in thingDefStatsWRange) {
-                    FilterRange filterRange;
-                    if (stat.statDef.toStringStyle == ToStringStyle.Integer)
-                        filterRange = new FilterIntRange(
-                            $"COCTF_allowed{stat.statDef.defName}", stat.statDef.label, stat.min, stat.max, (range, thing) => range.Includes(thing.def.GetStatValueAbstract(stat.statDef)));
-                    else
-                        filterRange = new FilterFloatRange(
-                            $"COCTF_allowed{stat.statDef.defName}", stat.statDef.label, stat.statDef.toStringStyle, stat.min, stat.max,
-                            (range, thing) => range.Includes(thing.def.GetStatValueAbstract(stat.statDef)));
+                    var filterRange = new FilterRange(
+                        $"COCTF_allowed{stat.statDef.defName}", stat.statDef.label, stat.statDef.toStringStyle, stat.min, stat.max,
+                        (range, thing) => range.Includes(thing.def.GetStatValueAbstract(stat.statDef)));
                     filterRanges.Add(filterRange);
                 }
             }
@@ -120,10 +116,7 @@ namespace CustomThingFilters
             {
                 foreach (var range in filterRanges) {
                     if (Scribe.mode == LoadSaveMode.Saving && range.AtDefault()) continue;
-                    if (range is FilterIntRange intRange)
-                        Scribe_Values.Look(ref intRange.inner, intRange.saveLabel, new IntRange(-9999999, -9999999));
-                    if (range is FilterFloatRange floatRange)
-                        Scribe_Values.Look(ref floatRange.inner, floatRange.saveLabel, new FloatRange(-9999999f, -9999999f));
+                    Scribe_Values.Look(ref range.inner, range.saveLabel, new FloatRange(-9999999f, -9999999f));
                 }
             }
 
@@ -140,6 +133,7 @@ namespace CustomThingFilters
                     AddStatDefs(statDef);
             }
 
+            [SuppressMessage("ReSharper", "UnusedParameter.Local")]
             public static void SceneLoaded(Scene scene)
             {
                 if (!GenScene.InPlayScene)

@@ -67,7 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BillTargetCount.cs" />
-    <Compile Include="RangeWidgets.cs" />
+    <Compile Include="RangeWidget.cs" />
     <Compile Include="CustomThingFilters.cs" />
     <Compile Include="BugFixes.cs" />
     <Compile Include="FilterRange.cs" />
