@@ -18,8 +18,7 @@ namespace CustomThingFilters
                 typeof(Widgets).GetMethod("CheckPlayDragSliderSound", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, new object[] { });
             };
 
-            static RangeEnd curDragEnd
-            {
+            static RangeEnd curDragEnd {
                 get => (RangeEnd) _curDragEnd;
                 set => _curDragEnd = (byte) value;
             }
@@ -29,11 +28,13 @@ namespace CustomThingFilters
             [HarmonyPatch(typeof(Widgets), nameof(Widgets.FloatRange))]
             static class Widgets_FloatRange_Patch
             {
+                // custom widget to replace Widgets.IntRange and Widgets.FloatRange, which are almost identical to start with
+
                 [HarmonyPrefix]
                 static bool CustomRangeWidget(ref Color ___RangeControlTextColor, ref Texture2D ___FloatRangeSliderTex, ref byte ___curDragEnd, ref int ___draggingId,
                     Rect rect, int id, ref FloatRange range, float min, float max, string labelKey, ToStringStyle valueStyle)
                 {
-                    if (!customRangeWidget) return true;
+                    if (!customWidget) return true;
                     var label = labelKey;
                     ___curDragEnd = ref _curDragEnd;
 

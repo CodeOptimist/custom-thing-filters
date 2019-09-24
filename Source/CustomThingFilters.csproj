@@ -66,12 +66,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BillTargetCount.cs" />
-    <Compile Include="RangeWidget.cs" />
+    <Compile Include="Patch_BillTargetCount.cs" />
+    <Compile Include="CustomFilter.cs" />
+    <Compile Include="Patch_RangeWidget.cs" />
     <Compile Include="CustomThingFilters.cs" />
-    <Compile Include="BugFixes.cs" />
+    <Compile Include="Patch_BugFixes.cs" />
     <Compile Include="FilterRange.cs" />
-    <Compile Include="StorageAndIngredients.cs" />
+    <Compile Include="StatThingInfo.cs" />
+    <Compile Include="Patch_StorageAndIngredients.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

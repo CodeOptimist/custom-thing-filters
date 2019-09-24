@@ -10,7 +10,8 @@ namespace CustomThingFilters
     {
         static class BugFixes
         {
-            public static IEnumerable<CodeInstruction> FilteredProductStackCounts(IEnumerable<CodeInstruction> instructions)
+            // in vanilla as soon as you modify a product count filter, e.g. even "hit points", stack count is ignored; this fixes that
+            public static IEnumerable<CodeInstruction> ProductStackCounts(IEnumerable<CodeInstruction> instructions)
             {
                 var sequence = new List<CodeInstruction> {
                     new CodeInstruction(OpCodes.Ldloc_0),
@@ -40,45 +41,6 @@ namespace CustomThingFilters
                     }
 
                 return codes.AsEnumerable();
-            }
-
-            [HarmonyPatch(typeof(Widgets), nameof(Widgets.FloatRange))]
-            static class Widgets_FloatRange_Patch
-            {
-                [HarmonyTranspiler]
-                static IEnumerable<CodeInstruction> FloatRangeDraw(IEnumerable<CodeInstruction> instructions)
-                {
-                    var sequence = new List<CodeInstruction> {
-                        new CodeInstruction(OpCodes.Mul),
-                        new CodeInstruction(OpCodes.Ldarg_3),
-                        new CodeInstruction(OpCodes.Ldarg_S, (byte) 4),
-                        new CodeInstruction(OpCodes.Ldarg_3),
-                        new CodeInstruction(OpCodes.Sub),
-                        new CodeInstruction(OpCodes.Div),
-                        new CodeInstruction(OpCodes.Sub)
-                    };
-
-                    var comparer = new CodeInstructionComparer();
-                    var codes = instructions.ToList();
-
-                    for (var i = 0; i < codes.Count - sequence.Count; i++)
-                        if (codes.GetRange(i, sequence.Count).SequenceEqual(sequence, comparer)) {
-                            codes.RemoveRange(i, sequence.Count);
-                            codes.InsertRange(
-                                i,
-                                new[] {
-                                    new CodeInstruction(OpCodes.Ldarg_3),
-                                    new CodeInstruction(OpCodes.Sub),
-                                    new CodeInstruction(OpCodes.Mul),
-                                    new CodeInstruction(OpCodes.Ldarg_S, (byte) 4),
-                                    new CodeInstruction(OpCodes.Ldarg_3),
-                                    new CodeInstruction(OpCodes.Sub),
-                                    new CodeInstruction(OpCodes.Div)
-                                });
-                        }
-
-                    return codes.AsEnumerable();
-                }
             }
 
             class CodeInstructionComparer : IEqualityComparer<CodeInstruction>

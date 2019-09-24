@@ -21,7 +21,10 @@ namespace CustomThingFilters
                     return;
                 var customFilter = thingFilterCustomFilters[filter];
 
-                foreach (var range in customFilter.filterRanges) {
+                // copying DrawQualityFilterConfig() re: setting font, etc.
+                customFilter.DrawMenu(new Rect(20f, y, width - 20f, 24f));
+                y += 24f;
+                foreach (var range in customFilter.ActiveFilterRanges) {
                     var rect = new Rect(20f, y, width - 20f, 28f);
                     range.Draw(rect);
                     y += 28f;
@@ -69,7 +72,7 @@ namespace CustomThingFilters
                 [HarmonyPostfix]
                 static void ExposeCustomFilter(StorageSettings __instance)
                 {
-                    CustomThingFilters.ExposeCustomFilter(storageSettingsCustomFilters, __instance, __instance.filter, "COCTF_thingCustomFilter");
+                    CustomThingFilters.ExposeCustomFilter(storageSettingsCustomFilters, __instance, __instance.filter, "COCTF_thingFilter");
                 }
             }
 
@@ -80,7 +83,7 @@ namespace CustomThingFilters
                 static void ExposeCustomFilters(Bill __instance)
                 {
                     ExposeCustomFilter(billTargetCountCustomFilters, __instance, null, "COCTF_targetCountFilter");
-                    ExposeCustomFilter(billCustomFilters, __instance, __instance.ingredientFilter, "COCTF_thingCustomFilter");
+                    ExposeCustomFilter(billCustomFilters, __instance, __instance.ingredientFilter, "COCTF_thingFilter");
                 }
             }
 

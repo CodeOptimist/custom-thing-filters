@@ -14,26 +14,27 @@ namespace CustomThingFilters
         static class BillTargetCount
         {
             [SuppressMessage("ReSharper", "MemberCanBePrivate.Local")]
-            public static bool IsCountFilterAtDefaults(Bill_Production bill)
+            public static bool HasNoActiveFilters(Bill_Production bill)
             {
                 if (billTargetCountCustomFilters.ContainsKey(bill)) {
                     var customFilter = billTargetCountCustomFilters[bill];
-                    foreach (var range in customFilter.filterRanges)
-                        if (!range.AtDefault())
-                            return false;
+                    return !customFilter.ActiveFilterRanges.Any();
                 }
+
                 return true;
             }
 
             [SuppressMessage("ReSharper", "MemberCanBePrivate.Local")]
-            public static void Dialog_BillConfig_AfterQualityRange(Listing_Standard standard, Bill_Production bill)
+            public static void Dialog_BillConfig_AfterQualityRange(Listing_Standard listing, Bill_Production bill)
             {
                 if (!billTargetCountCustomFilters.ContainsKey(bill))
                     return;
                 var customFilter = billTargetCountCustomFilters[bill];
 
-                foreach (var range in customFilter.filterRanges) {
-                    var rect = standard.GetRect(28f);
+                customFilter.DrawMenu(listing.GetRect(24f));
+
+                foreach (var range in customFilter.ActiveFilterRanges) {
+                    var rect = listing.GetRect(28f);
                     range.Draw(rect);
                 }
             }
@@ -58,9 +59,11 @@ namespace CustomThingFilters
             static class RecipeWorkerCounter_CountProducts_Patch
             {
                 [HarmonyTranspiler]
-                static IEnumerable<CodeInstruction> IsTargetCountFilterSet(IEnumerable<CodeInstruction> instructions)
+                static IEnumerable<CodeInstruction> SkipManualCount(IEnumerable<CodeInstruction> instructions)
                 {
-                    var myMethod = typeof(BillTargetCount).GetMethod(nameof(IsCountFilterAtDefaults));
+                    // in our case having an active filter is a deliberate action so let's apply it even if the range is the default "anything"
+                    // (e.g. we may want things of a def that show a stat, period, regardless of value)
+                    var myMethod = typeof(BillTargetCount).GetMethod(nameof(HasNoActiveFilters));
                     var codes = instructions.ToList();
                     for (var i = 0; i < codes.Count; i++)
                         if (codes[i].operand is FieldInfo fieldInfo && fieldInfo == typeof(Bill_Production).GetField(nameof(Bill_Production.hpRange))) {
