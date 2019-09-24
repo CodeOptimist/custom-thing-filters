@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Defs>
+  <HugsLib.UpdateFeatureDef Abstract="true" Name="UpdateFeatureBase">
+    <modNameReadable>Storage &amp; Ingredient Filters</modNameReadable>
+    <modIdentifier>COCustomThingFilters</modIdentifier>
+    <linkUrl>https://codeoptimism.com/proj/84/</linkUrl>
+  </HugsLib.UpdateFeatureDef>
+</Defs>
