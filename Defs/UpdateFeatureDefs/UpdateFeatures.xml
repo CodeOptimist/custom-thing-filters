@@ -2,7 +2,7 @@
 
 <Defs>
   <HugsLib.UpdateFeatureDef Abstract="true" Name="UpdateFeatureBase">
-    <modNameReadable>Storage &amp; Ingredient Filters</modNameReadable>
+    <modNameReadable>Stockpile &amp; Ingredient Filters</modNameReadable>
     <modIdentifier>COCustomThingFilters</modIdentifier>
     <linkUrl>https://codeoptimism.com/proj/84/</linkUrl>
   </HugsLib.UpdateFeatureDef>
