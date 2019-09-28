@@ -41,11 +41,6 @@
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\818773962\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="0Reloader, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Source-DLLs\0Reloader.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -81,6 +76,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\Defs\UpdateFeatureDefs\UpdateFeatures.xml">
+      <Link>UpdateFeatures.xml</Link>
+    </Content>
+    <Content Include="..\Languages\English\Keyed\Settings.xml">
+      <Link>Settings.xml</Link>
+    </Content>
     <Content Include="Properties\AssemblyInfo.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyInfo.cs</LastGenOutput>
@@ -102,6 +103,20 @@
     <Exec Command="&quot;$(_TransformExe)&quot; &quot;$(_TextTransform)&quot; -out &quot;$(_TextTransformResult)&quot;" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>set errorlevel=0 &amp; echo $(ConfigurationName) | find "Release" &gt;nul &amp;&amp; del "$(OutDir)\0Reloader.dll"</PostBuildEvent>
+    <PostBuildEvent>if not exist "%25Temp%25\run_on_successful_build" exit
+set $name=RimWorldWin64.exe
+del "%25Temp%25\run_on_successful_build"
+:loop
+tasklist /fi "ImageName eq %25$name%25" /nh | find /i "%25$name%25" &gt;nul || goto :continue
+timeout /t 1 2&gt;nul
+goto :loop
+:continue
+start "" steam://rungameid/294100
+set errorlevel=0</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>if not exist "%25Temp%25\run_on_successful_build" exit
+set $name=RimWorldWin64.exe
+start "" /min taskkill /im %25$name%25</PreBuildEvent>
   </PropertyGroup>
 </Project>
