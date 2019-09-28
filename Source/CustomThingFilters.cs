@@ -35,7 +35,7 @@ namespace CustomThingFilters
             if (fixFilteredProductStackCounts)
                 HarmonyInst.Patch(
                     typeof(RecipeWorkerCounter).GetMethod("CountValidThings"),
-                    transpiler: new HarmonyMethod(typeof(BugFixes), nameof(BugFixes.ProductStackCounts)));
+                    transpiler: new HarmonyMethod(typeof(Patch_BugFixes), nameof(Patch_BugFixes.ProductStackCounts)));
 
             StatThingInfo.DefsLoaded();
         }

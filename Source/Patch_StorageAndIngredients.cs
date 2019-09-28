@@ -12,7 +12,7 @@ namespace CustomThingFilters
 {
     partial class CustomThingFilters
     {
-        static class StorageAndIngredients
+        static class Patch_StorageAndIngredients
         {
             [SuppressMessage("ReSharper", "MemberCanBePrivate.Local")]
             public static void ThingFilterUI_AfterQualityRange(ref float y, float width, ThingFilter filter)
@@ -53,7 +53,7 @@ namespace CustomThingFilters
                 [HarmonyTranspiler]
                 static IEnumerable<CodeInstruction> AfterQualityRange(IEnumerable<CodeInstruction> instructions)
                 {
-                    var myMethod = typeof(StorageAndIngredients).GetMethod(nameof(ThingFilterUI_AfterQualityRange));
+                    var myMethod = typeof(Patch_StorageAndIngredients).GetMethod(nameof(ThingFilterUI_AfterQualityRange));
                     var codes = instructions.ToList();
                     for (var i = 0; i < codes.Count; i++)
                         if (codes[i].operand is MethodInfo method && method == typeof(ThingFilterUI).GetMethod("DrawQualityFilterConfig", BindingFlags.Static | BindingFlags.NonPublic)) {

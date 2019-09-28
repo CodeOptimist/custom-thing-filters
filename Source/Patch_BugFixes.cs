@@ -8,7 +8,7 @@ namespace CustomThingFilters
 {
     partial class CustomThingFilters
     {
-        static class BugFixes
+        static class Patch_BugFixes
         {
             // in vanilla as soon as you modify a product count filter, e.g. even "hit points", stack count is ignored; this fixes that
             public static IEnumerable<CodeInstruction> ProductStackCounts(IEnumerable<CodeInstruction> instructions)

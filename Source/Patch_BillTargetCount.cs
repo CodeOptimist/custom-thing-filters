@@ -11,7 +11,7 @@ namespace CustomThingFilters
 {
     partial class CustomThingFilters
     {
-        static class BillTargetCount
+        static class Patch_BillTargetCount
         {
             [SuppressMessage("ReSharper", "MemberCanBePrivate.Local")]
             public static bool HasNoActiveFilters(Bill_Production bill)
@@ -63,7 +63,7 @@ namespace CustomThingFilters
                 {
                     // in our case having an active filter is a deliberate action so let's apply it even if the range is the default "anything"
                     // (e.g. we may want things of a def that show a stat, period, regardless of value)
-                    var myMethod = typeof(BillTargetCount).GetMethod(nameof(HasNoActiveFilters));
+                    var myMethod = typeof(Patch_BillTargetCount).GetMethod(nameof(HasNoActiveFilters));
                     var codes = instructions.ToList();
                     for (var i = 0; i < codes.Count; i++)
                         if (codes[i].operand is FieldInfo fieldInfo && fieldInfo == typeof(Bill_Production).GetField(nameof(Bill_Production.hpRange))) {
@@ -86,7 +86,7 @@ namespace CustomThingFilters
                 [HarmonyTranspiler]
                 static IEnumerable<CodeInstruction> AfterQualityRange(IEnumerable<CodeInstruction> instructions)
                 {
-                    var myMethod = typeof(BillTargetCount).GetMethod(nameof(Dialog_BillConfig_AfterQualityRange));
+                    var myMethod = typeof(Patch_BillTargetCount).GetMethod(nameof(Dialog_BillConfig_AfterQualityRange));
                     var codes = instructions.ToList();
                     for (var i = 0; i < codes.Count; i++)
                         if (codes[i].operand is MethodInfo method && method == typeof(Widgets).GetMethod("QualityRange")) {
