@@ -11,19 +11,23 @@
 <![CDATA[
 <size=20>Custom thing filters.</size>
 
-Filter things by stat (others to come later!).
+Filter things by stat (others to come later).
 
-<color=teal><b>Performance</b></color>
-Minimal performance impact: precomputes stat value per ThingDef on load.
+<color=teal><b>Stockpile filters.</b></color>
+<i>Your most potent medicine; your most deadly arsenal!
+Clear inflammables from the fire path!
+Who knew wood was a melee weapon?
+</i>
 
-<color=teal><b>Storage filters</b></color>
-<i>Your most potent medicine! Your most deadly arsenal!</i>
+<color=teal><b>Ingredient filters.</b></color>
+<i>Fast deterioration? Use those first.
+Smelt weapons too cheap to sell!</i>
 
-<color=teal><b>Ingredient filters</b></color>
-<i>Your most deterioriated of hops!</i>
+<color=teal><b>Product count filters.</b></color>
+<i>Not worth enough? Make another.</i>
 
-<color=teal><b>Product count filters</b></color>
-<i>If it's not worth enough, make another!</i>
+<color=teal><b>Performance.</b></color>
+Base stats are precomputed per ThingDef on load.
 
 <size=20>Hello World!</size>
 

@@ -3,6 +3,6 @@
 <LanguageData>
 
   <COCTF_fixFilteredProductStackCountsSetting_title>Fix filtered product stack counts</COCTF_fixFilteredProductStackCountsSetting_title>
-  <COCTF_fixFilteredProductStackCountsSetting_description>&lt;b&gt;Requires restart.&lt;/b&gt; Fixes a vanilla bug(?) where stack counts are ignored as soon as a product count filter (e.g. hitpoints, quality) is applied in the "Do until X" section of a bill.</COCTF_fixFilteredProductStackCountsSetting_description>
+  <COCTF_fixFilteredProductStackCountsSetting_description>&lt;b&gt;Enabling requires restart.&lt;/b&gt; Fixes a vanilla bug(?) where stack counts are ignored as soon as a product count filter (e.g. hitpoints, quality) is applied in the "Do until X" section of a bill.</COCTF_fixFilteredProductStackCountsSetting_description>
 
 </LanguageData>

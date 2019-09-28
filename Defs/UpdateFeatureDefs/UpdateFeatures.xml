@@ -6,4 +6,15 @@
     <modIdentifier>COCustomThingFilters</modIdentifier>
     <linkUrl>https://codeoptimism.com/proj/84/</linkUrl>
   </HugsLib.UpdateFeatureDef>
+
+  <HugsLib.UpdateFeatureDef ParentName="UpdateFeatureBase">
+    <defName>COCustomThingFilters_1_1_0</defName>
+    <assemblyVersion>1.1.0</assemblyVersion>
+    <content>
+      <![CDATA[
+Can now filter by either <i>base stat</i> or <i>current stat</i>.
+|img:Things/Mote/BattleSymbols/Downed|caption:Be aware existing filters have become "current stat" filters!
+    ]]>
+    </content>
+  </HugsLib.UpdateFeatureDef>
 </Defs>

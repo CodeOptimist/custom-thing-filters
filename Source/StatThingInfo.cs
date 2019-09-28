@@ -11,7 +11,7 @@ namespace CustomThingFilters
 {
     partial class CustomThingFilters
     {
-        class StatThingInfo
+        public class StatThingInfo
         {
             static readonly List<StatDef> explicitlyIntegers = new List<StatDef> {
                 StatDefOf.MaxHitPoints, StatDefOf.Beauty, StatDefOf.TrapMeleeDamage, StatDefOf.CarryingCapacity, StatDefOf.MeatAmount, StatDefOf.LeatherAmount, StatDefOf.MinimumHandlingSkill

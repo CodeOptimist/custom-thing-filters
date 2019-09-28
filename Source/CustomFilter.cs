@@ -13,8 +13,10 @@ namespace CustomThingFilters
 
             public CustomFilter()
             {
-                foreach (var info in statThingInfos)
-                    filterRanges.Add(new StatFilterRange(info.statDef, info.thingDefValues, info.min, info.max));
+                foreach (var info in statThingInfos) {
+                    filterRanges.Add(new BaseStatFilterRange(info));
+                    filterRanges.Add(new CurStatFilterRange(info));
+                }
             }
 
             public IEnumerable<FilterRange> ActiveFilterRanges {
@@ -41,10 +43,17 @@ namespace CustomThingFilters
             {
                 var font = Text.Font;
                 Text.Font = GameFont.Small;
-                if (Widgets.ButtonText(rect, "Stat filters")) {
-                    var list = filterRanges.OrderBy(x => x.menuLabel).Select(x => new FloatMenuOption((x.isActive ? "✔ " : " ") + x.menuLabel, () => { x.isActive = !x.isActive; })).ToList();
-                    Find.WindowStack.Add(new FloatMenu(list));
+
+                FloatMenu NewMenuFromRanges(IEnumerable<FilterRange> ranges)
+                {
+                    var floatMenuOptions = ranges.OrderBy(x => x.menuLabel).Select(x => new FloatMenuOption((x.isActive ? "✔ " : " ") + x.menuLabel, () => { x.isActive = !x.isActive; }));
+                    return new FloatMenu(floatMenuOptions.ToList());
                 }
+                
+                if (Widgets.ButtonText(new Rect(rect.x, rect.y, rect.width / 2, rect.height), "Base stat"))
+                    Find.WindowStack.Add(NewMenuFromRanges(filterRanges.OfType<BaseStatFilterRange>().Cast<FilterRange>()));
+                if (Widgets.ButtonText(new Rect(rect.x + rect.width / 2, rect.y, rect.width / 2, rect.height), "Current stat"))
+                    Find.WindowStack.Add(NewMenuFromRanges(filterRanges.OfType<CurStatFilterRange>().Cast<FilterRange>()));
 
                 Text.Font = font;
             }

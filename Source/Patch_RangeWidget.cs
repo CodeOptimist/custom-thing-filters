@@ -10,7 +10,7 @@ namespace CustomThingFilters
 {
     partial class CustomThingFilters
     {
-        static class RangeWidget
+        static class Patch_RangeWidget
         {
             static byte _curDragEnd;
 
@@ -34,7 +34,7 @@ namespace CustomThingFilters
                 static bool CustomRangeWidget(ref Color ___RangeControlTextColor, ref Texture2D ___FloatRangeSliderTex, ref byte ___curDragEnd, ref int ___draggingId,
                     Rect rect, int id, ref FloatRange range, float min, float max, string labelKey, ToStringStyle valueStyle)
                 {
-                    if (!customWidget) return true;
+                    if (filterRangeTypeToDraw == null) return true;
                     var label = labelKey;
                     ___curDragEnd = ref _curDragEnd;
 
