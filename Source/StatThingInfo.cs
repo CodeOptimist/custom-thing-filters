@@ -27,16 +27,14 @@ namespace CustomThingFilters
             public readonly StatDef statDef;
             public readonly Dictionary<ThingDef, float> thingDefValues;
 
-            StatThingInfo(StatDef statDef, Dictionary<ThingDef, float> thingDefValues, float min, float max)
-            {
+            StatThingInfo(StatDef statDef, Dictionary<ThingDef, float> thingDefValues, float min, float max) {
                 this.statDef = statDef;
                 this.thingDefValues = thingDefValues;
                 this.min = min;
                 this.max = max;
             }
 
-            public static void DefsLoaded()
-            {
+            public static void DefsLoaded() {
                 var pawnCategories = new[] {
                     StatCategoryDefOf.PawnSocial, StatCategoryDefOf.PawnCombat, StatCategoryDefOf.PawnMisc, StatCategoryDefOf.PawnWork, StatCategoryDefOf.BasicsPawn
                 };
@@ -51,8 +49,7 @@ namespace CustomThingFilters
             }
 
             [SuppressMessage("ReSharper", "UnusedParameter.Local")]
-            public static void SceneLoaded(Scene scene)
-            {
+            public static void SceneLoaded(Scene scene) {
                 if (!GenScene.InPlayScene)
                     return;
 
@@ -63,8 +60,7 @@ namespace CustomThingFilters
                 }
             }
 
-            static StatThingInfo CreateInstance(StatDef statDef)
-            {
+            static StatThingInfo CreateInstance(StatDef statDef) {
                 float? min = null, max = null;
                 var foundFraction = false;
                 var thingDefValues = new Dictionary<ThingDef, float>();

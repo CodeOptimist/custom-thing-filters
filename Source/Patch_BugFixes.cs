@@ -45,16 +45,14 @@ namespace CustomThingFilters
 
             class CodeInstructionComparer : IEqualityComparer<CodeInstruction>
             {
-                public bool Equals(CodeInstruction x, CodeInstruction y)
-                {
+                public bool Equals(CodeInstruction x, CodeInstruction y) {
                     if (ReferenceEquals(null, x)) return false;
                     if (ReferenceEquals(null, y)) return false;
                     if (ReferenceEquals(x, y)) return true;
                     return Equals(x.opcode, y.opcode) && Equals(x.operand, y.operand);
                 }
 
-                public int GetHashCode(CodeInstruction obj)
-                {
+                public int GetHashCode(CodeInstruction obj) {
                     return obj.GetHashCode();
                 }
             }

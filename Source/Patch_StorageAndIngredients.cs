@@ -37,8 +37,7 @@ namespace CustomThingFilters
             static class ThingFilter_Allows_Patch
             {
                 [HarmonyPostfix]
-                static void IsAllowed(ThingFilter __instance, ref bool __result, Thing t)
-                {
+                static void IsAllowed(ThingFilter __instance, ref bool __result, Thing t) {
                     if (!thingFilterCustomFilters.ContainsKey(__instance))
                         return;
                     var customFilter = thingFilterCustomFilters[__instance];
@@ -70,8 +69,7 @@ namespace CustomThingFilters
             static class StorageSettings_ExposeData_Patch
             {
                 [HarmonyPostfix]
-                static void ExposeCustomFilter(StorageSettings __instance)
-                {
+                static void ExposeCustomFilter(StorageSettings __instance) {
                     CustomThingFilters.ExposeCustomFilter(storageSettingsCustomFilters, __instance, __instance.filter, "COCTF_thingFilter");
                 }
             }
@@ -80,8 +78,7 @@ namespace CustomThingFilters
             static class Bill_ExposeData_Patch
             {
                 [HarmonyPostfix]
-                static void ExposeCustomFilters(Bill __instance)
-                {
+                static void ExposeCustomFilters(Bill __instance) {
                     ExposeCustomFilter(billTargetCountCustomFilters, __instance, null, "COCTF_targetCountFilter");
                     ExposeCustomFilter(billCustomFilters, __instance, __instance.ingredientFilter, "COCTF_thingFilter");
                 }
@@ -91,8 +88,7 @@ namespace CustomThingFilters
             static class StorageSettings_StorageSettings_Patch
             {
                 [HarmonyPostfix]
-                static void CreateCustomFilter(StorageSettings __instance)
-                {
+                static void CreateCustomFilter(StorageSettings __instance) {
                     CustomThingFilters.CreateCustomFilter(storageSettingsCustomFilters, __instance, __instance.filter);
                 }
             }
@@ -101,8 +97,7 @@ namespace CustomThingFilters
             static class Bill_Bill_Patch
             {
                 [HarmonyPostfix]
-                static void CreateCustomFilters(Bill __instance)
-                {
+                static void CreateCustomFilters(Bill __instance) {
                     CreateCustomFilter(billTargetCountCustomFilters, __instance, null);
                     CreateCustomFilter(billCustomFilters, __instance, __instance.ingredientFilter);
                 }
@@ -112,8 +107,7 @@ namespace CustomThingFilters
             static class ThingFilter_CopyAllowancesFrom_Patch
             {
                 [HarmonyPostfix]
-                static void CopyCustomFilter(ThingFilter __instance, ThingFilter other)
-                {
+                static void CopyCustomFilter(ThingFilter __instance, ThingFilter other) {
                     if (!thingFilterCustomFilters.ContainsKey(__instance))
                         return;
                     var customFilter = thingFilterCustomFilters[__instance];

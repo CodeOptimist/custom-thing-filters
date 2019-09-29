@@ -11,8 +11,7 @@ namespace CustomThingFilters
         {
             public readonly List<FilterRange> filterRanges = new List<FilterRange>();
 
-            public CustomFilter()
-            {
+            public CustomFilter() {
                 foreach (var info in statThingInfos) {
                     filterRanges.Add(new BaseStatFilterRange(info));
                     filterRanges.Add(new CurStatFilterRange(info));
@@ -23,8 +22,7 @@ namespace CustomThingFilters
                 get { return filterRanges.Where(x => x.isActive); }
             }
 
-            public void ExposeData()
-            {
+            public void ExposeData() {
                 foreach (var range in filterRanges) {
                     if (Scribe.mode != LoadSaveMode.Saving || range.isActive || !range.AtDefault())
                         Scribe_Values.Look(ref range.isActive, $"{range.saveLabel}_isActive", forceSave: !range.AtDefault());
@@ -34,22 +32,19 @@ namespace CustomThingFilters
                 }
             }
 
-            public bool IsAllowed(Thing t)
-            {
+            public bool IsAllowed(Thing t) {
                 return ActiveFilterRanges.All(range => range.IsAllowed(t));
             }
 
-            public void DrawMenu(Rect rect)
-            {
+            public void DrawMenu(Rect rect) {
                 var font = Text.Font;
                 Text.Font = GameFont.Small;
 
-                FloatMenu NewMenuFromRanges(IEnumerable<FilterRange> ranges)
-                {
+                FloatMenu NewMenuFromRanges(IEnumerable<FilterRange> ranges) {
                     var floatMenuOptions = ranges.OrderBy(x => x.menuLabel).Select(x => new FloatMenuOption((x.isActive ? "✔ " : " ") + x.menuLabel, () => { x.isActive = !x.isActive; }));
                     return new FloatMenu(floatMenuOptions.ToList());
                 }
-                
+
                 if (Widgets.ButtonText(new Rect(rect.x, rect.y, rect.width / 2, rect.height), "Base stat"))
                     Find.WindowStack.Add(NewMenuFromRanges(filterRanges.OfType<BaseStatFilterRange>().Cast<FilterRange>()));
                 if (Widgets.ButtonText(new Rect(rect.x + rect.width / 2, rect.y, rect.width / 2, rect.height), "Current stat"))

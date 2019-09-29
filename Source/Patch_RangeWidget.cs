@@ -32,8 +32,7 @@ namespace CustomThingFilters
 
                 [HarmonyPrefix]
                 static bool CustomRangeWidget(ref Color ___RangeControlTextColor, ref Texture2D ___FloatRangeSliderTex, ref byte ___curDragEnd, ref int ___draggingId,
-                    Rect rect, int id, ref FloatRange range, float min, float max, string labelKey, ToStringStyle valueStyle)
-                {
+                    Rect rect, int id, ref FloatRange range, float min, float max, string labelKey, ToStringStyle valueStyle) {
                     if (filterRangeTypeToDraw == null) return true;
                     var label = labelKey;
                     ___curDragEnd = ref _curDragEnd;

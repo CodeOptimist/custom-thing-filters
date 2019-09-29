@@ -19,8 +19,7 @@ namespace CustomThingFilters
         static SettingHandle<bool> fixFilteredProductStackCounts;
         public override string ModIdentifier => "COCustomThingFilters";
 
-        public override void DefsLoaded()
-        {
+        public override void DefsLoaded() {
             thingFilterCustomFilters = new Dictionary<ThingFilter, CustomFilter>();
             storageSettingsCustomFilters = new Dictionary<StorageSettings, CustomFilter>();
             billCustomFilters = new Dictionary<Bill, CustomFilter>();
@@ -40,13 +39,11 @@ namespace CustomThingFilters
             StatThingInfo.DefsLoaded();
         }
 
-        public override void SceneLoaded(Scene scene)
-        {
+        public override void SceneLoaded(Scene scene) {
             StatThingInfo.SceneLoaded(scene);
         }
 
-        static void ExposeCustomFilter<T>(Dictionary<T, CustomFilter> dict, T t, ThingFilter filter, string label)
-        {
+        static void ExposeCustomFilter<T>(Dictionary<T, CustomFilter> dict, T t, ThingFilter filter, string label) {
             if (Scribe.mode == LoadSaveMode.LoadingVars) {
                 var customFilter = new CustomFilter();
                 Scribe_Deep.Look(ref customFilter, label);
@@ -65,8 +62,7 @@ namespace CustomThingFilters
             }
         }
 
-        static void CreateCustomFilter<T>(Dictionary<T, CustomFilter> dict, T __instance, ThingFilter filter)
-        {
+        static void CreateCustomFilter<T>(Dictionary<T, CustomFilter> dict, T __instance, ThingFilter filter) {
             var customFilter = new CustomFilter();
             dict.Add(__instance, customFilter);
 

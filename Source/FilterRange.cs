@@ -12,8 +12,7 @@ namespace CustomThingFilters
         public abstract class StatFilterRange : FilterRange
         {
             protected StatFilterRange(StatThingInfo info, string saveLabel, string widgetLabel, string menuLabel,
-                Func<FilterRange, Thing, bool> isAllowed) : base(saveLabel, widgetLabel, menuLabel, info.statDef.toStringStyle, info.min, info.max, isAllowed)
-            {
+                Func<FilterRange, Thing, bool> isAllowed) : base(saveLabel, widgetLabel, menuLabel, info.statDef.toStringStyle, info.min, info.max, isAllowed) {
             }
         }
 
@@ -22,8 +21,7 @@ namespace CustomThingFilters
             public BaseStatFilterRange(StatThingInfo info) : base(
                 info,
                 $"COCTF_allowedBase{info.statDef.defName}", info.statDef.label, $"<i>{info.statDef.category.label}:</i> {info.statDef.label}",
-                (range, thing) => info.thingDefValues.ContainsKey(thing.def) && range.Includes(info.thingDefValues[thing.def]))
-            {
+                (range, thing) => info.thingDefValues.ContainsKey(thing.def) && range.Includes(info.thingDefValues[thing.def])) {
             }
         }
 
@@ -32,8 +30,7 @@ namespace CustomThingFilters
             public CurStatFilterRange(StatThingInfo info) : base(
                 info,
                 $"COCTF_allowed{info.statDef.defName}", info.statDef.label, $"<i>{info.statDef.category.label}:</i> {info.statDef.label}",
-                (range, thing) => info.thingDefValues.ContainsKey(thing.def) && range.Includes(thing.GetStatValue(info.statDef)))
-            {
+                (range, thing) => info.thingDefValues.ContainsKey(thing.def) && range.Includes(thing.GetStatValue(info.statDef))) {
             }
         }
 
@@ -47,8 +44,7 @@ namespace CustomThingFilters
             public bool isActive;
             protected Func<FilterRange, Thing, bool> isAllowed;
 
-            protected FilterRange(string saveLabel, string widgetLabel, string menuLabel, ToStringStyle toStringStyle, float min, float max, Func<FilterRange, Thing, bool> isAllowed)
-            {
+            protected FilterRange(string saveLabel, string widgetLabel, string menuLabel, ToStringStyle toStringStyle, float min, float max, Func<FilterRange, Thing, bool> isAllowed) {
                 this.saveLabel = saveLabel;
                 this.widgetLabel = widgetLabel;
                 this.menuLabel = menuLabel;
@@ -59,35 +55,29 @@ namespace CustomThingFilters
                 inner = new FloatRange(min, max);
             }
 
-            public object Clone()
-            {
+            public object Clone() {
                 return (FilterRange) MemberwiseClone();
             }
 
-            public bool IsAllowed(Thing thing)
-            {
+            public bool IsAllowed(Thing thing) {
                 return isAllowed(this, thing);
             }
 
-            public bool AtDefault()
-            {
+            public bool AtDefault() {
                 return Mathf.Approximately(inner.min, min) && Mathf.Approximately(inner.max, max);
             }
 
-            public bool Includes(float val)
-            {
+            public bool Includes(float val) {
                 return val >= inner.min && val <= inner.max;
             }
 
-            public void Draw(Rect rect)
-            {
+            public void Draw(Rect rect) {
                 filterRangeTypeToDraw = GetType();
                 Widgets.FloatRange(rect, (int) rect.y, ref inner, min, max, widgetLabel, toStringStyle);
                 filterRangeTypeToDraw = null;
             }
 
-            public void Load()
-            {
+            public void Load() {
                 var loadedNull = Mathf.Approximately(inner.min, -9999999f) && Mathf.Approximately(inner.max, -9999999f);
                 if (loadedNull) {
                     // adapt to changing thingDef ranges due to mods
