@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using Harmony;
 using RimWorld;
 using UnityEngine;
@@ -14,9 +13,7 @@ namespace CustomThingFilters
         {
             static byte _curDragEnd;
 
-            static readonly Action CheckPlayDragSliderSound = () => {
-                typeof(Widgets).GetMethod("CheckPlayDragSliderSound", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, new object[] { });
-            };
+            static readonly Action CheckPlayDragSliderSound = () => { AccessTools.Method(typeof(Widgets), "CheckPlayDragSliderSound")?.Invoke(null, new object[] { }); };
 
             static RangeEnd curDragEnd {
                 get => (RangeEnd) _curDragEnd;

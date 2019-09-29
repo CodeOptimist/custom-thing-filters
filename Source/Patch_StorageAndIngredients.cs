@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -14,9 +13,7 @@ namespace CustomThingFilters
     {
         static class Patch_StorageAndIngredients
         {
-            [SuppressMessage("ReSharper", "MemberCanBePrivate.Local")]
-            public static void ThingFilterUI_AfterQualityRange(ref float y, float width, ThingFilter filter)
-            {
+            static void ThingFilterUI_AfterQualityRange(ref float y, float width, ThingFilter filter) {
                 if (!thingFilterCustomFilters.ContainsKey(filter))
                     return;
                 var customFilter = thingFilterCustomFilters[filter];
@@ -50,14 +47,12 @@ namespace CustomThingFilters
             static class ThingFilterUI_DoThingFilterConfigWindow_Patch
             {
                 [HarmonyTranspiler]
-                static IEnumerable<CodeInstruction> AfterQualityRange(IEnumerable<CodeInstruction> instructions)
-                {
-                    var myMethod = typeof(Patch_StorageAndIngredients).GetMethod(nameof(ThingFilterUI_AfterQualityRange));
+                static IEnumerable<CodeInstruction> AfterQualityRange(IEnumerable<CodeInstruction> instructions) {
+                    var myMethod = AccessTools.Method(typeof(Patch_StorageAndIngredients), nameof(ThingFilterUI_AfterQualityRange));
                     var codes = instructions.ToList();
                     for (var i = 0; i < codes.Count; i++)
-                        if (codes[i].operand is MethodInfo method && method == typeof(ThingFilterUI).GetMethod("DrawQualityFilterConfig", BindingFlags.Static | BindingFlags.NonPublic)) {
-                            codes.InsertRange(i + 2, codes.GetRange(i - 4, 4));
-                            codes.Insert(i + 6, new CodeInstruction(OpCodes.Call, myMethod));
+                        if (codes[i].operand is MethodInfo method && method == AccessTools.Method(typeof(ThingFilterUI), "DrawQualityFilterConfig")) {
+                            codes.InsertRange(i + 2, codes.GetRange(i - 4, 4).Concat(new CodeInstruction(OpCodes.Call, myMethod)));
                             break;
                         }
 

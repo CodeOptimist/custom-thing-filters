@@ -13,9 +13,7 @@ namespace CustomThingFilters
     {
         static class Patch_BillTargetCount
         {
-            [SuppressMessage("ReSharper", "MemberCanBePrivate.Local")]
-            public static bool HasNoActiveFilters(Bill_Production bill)
-            {
+            static bool HasNoActiveFilters(Bill_Production bill) {
                 if (billTargetCountCustomFilters.ContainsKey(bill)) {
                     var customFilter = billTargetCountCustomFilters[bill];
                     return !customFilter.ActiveFilterRanges.Any();
@@ -24,9 +22,7 @@ namespace CustomThingFilters
                 return true;
             }
 
-            [SuppressMessage("ReSharper", "MemberCanBePrivate.Local")]
-            public static void Dialog_BillConfig_AfterQualityRange(Listing_Standard listing, Bill_Production bill)
-            {
+            static void Dialog_BillConfig_AfterQualityRange(Listing_Standard listing, Bill_Production bill) {
                 if (!billTargetCountCustomFilters.ContainsKey(bill))
                     return;
                 var customFilter = billTargetCountCustomFilters[bill];
@@ -44,8 +40,7 @@ namespace CustomThingFilters
             {
                 [HarmonyPostfix]
                 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
-                static void IsAllowed(ref bool __result, Thing thing, Bill_Production bill, ThingDef def)
-                {
+                static void IsAllowed(ref bool __result, Thing thing, Bill_Production bill, ThingDef def) {
                     if (__result == false) return;
                     if (!billTargetCountCustomFilters.ContainsKey(bill))
                         return;
@@ -59,14 +54,13 @@ namespace CustomThingFilters
             static class RecipeWorkerCounter_CountProducts_Patch
             {
                 [HarmonyTranspiler]
-                static IEnumerable<CodeInstruction> SkipManualCount(IEnumerable<CodeInstruction> instructions)
-                {
+                static IEnumerable<CodeInstruction> SkipManualCount(IEnumerable<CodeInstruction> instructions) {
                     // in our case having an active filter is a deliberate action so let's apply it even if the range is the default "anything"
                     // (e.g. we may want things of a def that show a stat, period, regardless of value)
-                    var myMethod = typeof(Patch_BillTargetCount).GetMethod(nameof(HasNoActiveFilters));
+                    var myMethod = AccessTools.Method(typeof(Patch_BillTargetCount), nameof(HasNoActiveFilters));
                     var codes = instructions.ToList();
                     for (var i = 0; i < codes.Count; i++)
-                        if (codes[i].operand is FieldInfo fieldInfo && fieldInfo == typeof(Bill_Production).GetField(nameof(Bill_Production.hpRange))) {
+                        if (codes[i].operand is FieldInfo fieldInfo && fieldInfo == AccessTools.Field(typeof(Bill_Production), nameof(Bill_Production.hpRange))) {
                             codes.InsertRange(
                                 i - 1, new List<CodeInstruction> {
                                     new CodeInstruction(OpCodes.Ldarg_1),
@@ -84,20 +78,18 @@ namespace CustomThingFilters
             static class Dialog_BillConfig_DoWindowContents_Patch
             {
                 [HarmonyTranspiler]
-                static IEnumerable<CodeInstruction> AfterQualityRange(IEnumerable<CodeInstruction> instructions)
-                {
-                    var myMethod = typeof(Patch_BillTargetCount).GetMethod(nameof(Dialog_BillConfig_AfterQualityRange));
+                static IEnumerable<CodeInstruction> AfterQualityRange(IEnumerable<CodeInstruction> instructions) {
+                    var myMethod = AccessTools.Method(typeof(Patch_BillTargetCount), nameof(Dialog_BillConfig_AfterQualityRange));
                     var codes = instructions.ToList();
                     for (var i = 0; i < codes.Count; i++)
-                        if (codes[i].operand is MethodInfo method && method == typeof(Widgets).GetMethod("QualityRange")) {
+                        if (codes[i].operand is MethodInfo method && method == AccessTools.Method(typeof(Widgets), nameof(Widgets.QualityRange))) {
                             codes.InsertRange(
                                 i + 2, new List<CodeInstruction> {
                                     codes[i - 7],
                                     codes[i - 3],
-                                    codes[i - 2]
+                                    codes[i - 2],
+                                    new CodeInstruction(OpCodes.Call, myMethod),
                                 });
-
-                            codes.Insert(i + 5, new CodeInstruction(OpCodes.Call, myMethod));
                             break;
                         }
 

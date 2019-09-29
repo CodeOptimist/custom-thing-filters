@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Harmony;
 using HugsLib;
 using HugsLib.Settings;
 using RimWorld;
@@ -25,17 +24,13 @@ namespace CustomThingFilters
             billCustomFilters = new Dictionary<Bill, CustomFilter>();
             billTargetCountCustomFilters = new Dictionary<Bill, CustomFilter>();
 
-            fixFilteredProductStackCounts = Settings.GetHandle(
-                "fixFilteredProductStackCounts",
-                "COCTF_fixFilteredProductStackCountsSetting_title".Translate(),
-                "COCTF_fixFilteredProductStackCountsSetting_description".Translate(),
-                true);
+            SettingHandle<T> GetSettingHandle<T>(string settingName, T defaultValue) {
+                return Settings.GetHandle(settingName, $"COCTF_{settingName}Setting_title".Translate(), $"COCTF_{settingName}Setting_description".Translate(), defaultValue);
+            }
 
-            if (fixFilteredProductStackCounts)
-                HarmonyInst.Patch(
-                    typeof(RecipeWorkerCounter).GetMethod("CountValidThings"),
-                    transpiler: new HarmonyMethod(typeof(Patch_BugFixes), nameof(Patch_BugFixes.ProductStackCounts)));
+            fixFilteredProductStackCounts = GetSettingHandle("fixFilteredProductStackCounts", true);
 
+            Patch_BugFixes.DefsLoaded(HarmonyInst);
             StatThingInfo.DefsLoaded();
         }
 

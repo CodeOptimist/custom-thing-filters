@@ -10,9 +10,15 @@ namespace CustomThingFilters
     {
         static class Patch_BugFixes
         {
+            public static void DefsLoaded(HarmonyInstance harmonyInst) {
+                if (fixFilteredProductStackCounts)
+                    harmonyInst.Patch(
+                        AccessTools.Method(typeof(RecipeWorkerCounter), nameof(RecipeWorkerCounter.CountValidThings)),
+                        transpiler: new HarmonyMethod(typeof(Patch_BugFixes), nameof(ProductStackCounts)));
+            }
+
             // in vanilla as soon as you modify a product count filter, e.g. even "hit points", stack count is ignored; this fixes that
-            public static IEnumerable<CodeInstruction> ProductStackCounts(IEnumerable<CodeInstruction> instructions)
-            {
+            static IEnumerable<CodeInstruction> ProductStackCounts(IEnumerable<CodeInstruction> instructions) {
                 var sequence = new List<CodeInstruction> {
                     new CodeInstruction(OpCodes.Ldloc_0),
                     new CodeInstruction(OpCodes.Ldc_I4_1),
@@ -30,8 +36,8 @@ namespace CustomThingFilters
                             new[] {
                                 new CodeInstruction(OpCodes.Ldarg_1),
                                 new CodeInstruction(OpCodes.Ldloc_1),
-                                new CodeInstruction(OpCodes.Callvirt, typeof(List<Thing>).GetMethod("get_Item")),
-                                new CodeInstruction(OpCodes.Ldfld, typeof(Thing).GetField(nameof(Thing.stackCount))),
+                                new CodeInstruction(OpCodes.Callvirt, AccessTools.Property(typeof(List<Thing>), "Item").GetGetMethod()),
+                                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Thing), nameof(Thing.stackCount))),
 
                                 new CodeInstruction(OpCodes.Ldloc_0),
                                 new CodeInstruction(OpCodes.Add),
