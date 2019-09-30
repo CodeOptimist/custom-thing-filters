@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version='1.0' encoding='UTF-8'?>
 <ModMetaData>
   <name>Stockpile &amp; Ingredient Filters</name>
   <author>CodeOptimist</author>
@@ -7,32 +6,22 @@
   <supportedVersions>
     <li>1.0</li>
   </supportedVersions>
-  <description>
-<![CDATA[
-<size=20>Custom thing filters.</size>
-
-Filter things by stat (others to come later).
-
-<color=teal><b>Stockpile filters.</b></color>
+  <description><![CDATA[<color=teal><b>Stockpile filters.</b></color>
 <i>Your most potent medicine; your most deadly arsenal!
 Clear inflammables from the fire path!
-Who knew wood was a melee weapon?
-</i>
+Send ugly sculptures to the trade beacon.</i>
 
 <color=teal><b>Ingredient filters.</b></color>
 <i>Fast deterioration? Use those first.
 Smelt weapons too cheap to sell!</i>
 
 <color=teal><b>Product count filters.</b></color>
-<i>Not worth enough? Make another.</i>
+<i>Sculpture not pretty enough? Make another!</i>
 
 <color=teal><b>Performance.</b></color>
 Base stats are precomputed per ThingDef on load.
 
-<size=20>Hello World!</size>
-
-As a programmer who loves this game, I wanted to finally share the improvements and tweaks I've benefited from back to the community, just as so many other modders have improved my experience. I love the small modifications to vanilla that have a huge impact, and am proud to be in the company of others passionate about not necessarily new guns and mechanics and effects, but quality of life on the Rim.
-- <color=silver><i>Christopher Galpin (CodeOptimist)</i></color>
-]]>
-  </description>
+<color=teal><b>Fix vanilla filtered product stack counts.</b></color>
+Fixes a vanilla bug(?) where stack counts are ignored as soon as a product count filter (e.g. hitpoints, quality) is applied in the "Do until X" section of a bill. <b>Enabling requires restart.</b>
+]]></description>
 </ModMetaData>

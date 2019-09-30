@@ -1,20 +1,39 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version='1.0' encoding='UTF-8'?>
 <Defs>
   <HugsLib.UpdateFeatureDef Abstract="true" Name="UpdateFeatureBase">
     <modNameReadable>Stockpile &amp; Ingredient Filters</modNameReadable>
     <modIdentifier>COCustomThingFilters</modIdentifier>
     <linkUrl>https://codeoptimism.com/proj/84/</linkUrl>
   </HugsLib.UpdateFeatureDef>
-
   <HugsLib.UpdateFeatureDef ParentName="UpdateFeatureBase">
     <defName>COCustomThingFilters_1_1_0</defName>
     <assemblyVersion>1.1.0</assemblyVersion>
     <content>
-      <![CDATA[
-Can now filter by either <i>base stat</i> or <i>current stat</i>.
-|img:Things/Mote/BattleSymbols/Downed|caption:Be aware existing filters have become "current stat" filters!
-    ]]>
+      Can now filter by either &lt;i&gt;base stat&lt;/i&gt; or &lt;i&gt;current stat&lt;/i&gt;.
+      |img:Things/Mote/BattleSymbols/Downed|caption:Be aware existing filters have become "current stat" filters!
+
     </content>
+  </HugsLib.UpdateFeatureDef>
+  <HugsLib.UpdateFeatureDef ParentName="UpdateFeatureBase">
+    <defName>COCustomThingFilters_1_0_0</defName>
+    <assemblyVersion>1.0.0</assemblyVersion>
+    <content><![CDATA[<color=teal><b>Stockpile filters.</b></color>
+<i>Your most potent medicine; your most deadly arsenal!
+Clear inflammables from the fire path!
+Send ugly sculptures to the trade beacon.</i>
+
+<color=teal><b>Ingredient filters.</b></color>
+<i>Fast deterioration? Use those first.
+Smelt weapons too cheap to sell!</i>
+
+<color=teal><b>Product count filters.</b></color>
+<i>Sculpture not pretty enough? Make another!</i>
+
+<color=teal><b>Performance.</b></color>
+Base stats are precomputed per ThingDef on load.
+
+<color=teal><b>Fix vanilla filtered product stack counts.</b></color>
+Fixes a vanilla bug(?) where stack counts are ignored as soon as a product count filter (e.g. hitpoints, quality) is applied in the "Do until X" section of a bill. <b>Enabling requires restart.</b>
+]]></content>
   </HugsLib.UpdateFeatureDef>
 </Defs>

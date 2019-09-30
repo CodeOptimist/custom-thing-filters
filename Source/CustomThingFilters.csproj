@@ -76,6 +76,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\About\About.xml">
+      <Link>About.xml</Link>
+    </Content>
     <Content Include="..\Defs\UpdateFeatureDefs\UpdateFeatures.xml">
       <Link>UpdateFeatures.xml</Link>
     </Content>

@@ -1,0 +1,46 @@
+﻿---
+header: |-
+  [h1]Like this? Try my [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1861437314]Assorted Alterations[/url] mod![/h1]
+
+  [h1]Quality of life modifications.[/h1]
+
+  Filter things by base or current stat (more later).
+
+features:
+- title: Stockpile filters.
+  at: 1.0.0
+  flavor: |-
+    Your most potent medicine; your most deadly arsenal!
+    Clear inflammables from the fire path!
+    Send ugly sculptures to the trade beacon.
+
+- title: Ingredient filters.
+  at: 1.0.0
+  flavor: |-
+    Fast deterioration? Use those first.
+    Smelt weapons too cheap to sell!
+
+- title: Product count filters.
+  at: 1.0.0
+  flavor: |-
+    Sculpture not pretty enough? Make another!
+
+- title: Performance.
+  at: 1.0.0
+  desc: |-
+    Base stats are precomputed per ThingDef on load.
+
+- title: Fix vanilla filtered product stack counts.
+  at: 1.0.0
+  desc: |-
+    Fixes a vanilla bug(?) where stack counts are ignored as soon as a product count filter (e.g. hitpoints, quality) is applied in the "Do until X" section of a bill. [b]Enabling requires restart.[/b]
+  settings:
+    - name: fixFilteredProductStackCounts
+
+footer: |-
+
+  [h1][url=https://github.com/CodeOptimist/custom-thing-filters]GitHub[/url][/h1]
+
+  [h1]Hello World![/h1]
+  As a programmer who loves this game, I wanted to finally share the improvements and tweaks I've benefited from back to the community, just as so many other modders have improved my experience. I love the small modifications to vanilla that have a huge impact, and am proud to be in the company of others passionate about not necessarily new guns and mechanics and effects, but quality of life on the Rim.
+  - [url=https://codeoptimism.com][i]Christopher Galpin (CodeOptimist)[/i][/url]
