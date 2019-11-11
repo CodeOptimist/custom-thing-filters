@@ -79,7 +79,7 @@
     <Content Include="..\About\About.xml">
       <Link>About.xml</Link>
     </Content>
-    <Content Include="..\Defs\UpdateFeatureDefs\UpdateFeatures.xml">
+    <Content Include="..\Defs\UpdateFeatures.xml">
       <Link>UpdateFeatures.xml</Link>
     </Content>
     <Content Include="..\Languages\English\Keyed\Settings.xml">
@@ -90,7 +90,6 @@
       <LastGenOutput>AssemblyInfo.cs</LastGenOutput>
     </Content>
     <Content Include="Source-DLLs\%24HugsLibChecker.dll" />
-    <Content Include="Source-DLLs\0Reloader.dll" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
