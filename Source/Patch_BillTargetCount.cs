@@ -14,18 +14,14 @@ namespace CustomThingFilters
         static class Patch_BillTargetCount
         {
             static bool HasNoActiveFilters(Bill_Production bill) {
-                if (billTargetCountCustomFilters.ContainsKey(bill)) {
-                    var customFilter = billTargetCountCustomFilters[bill];
+                if (billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
                     return !customFilter.ActiveFilterRanges.Any();
-                }
-
                 return true;
             }
 
             static void Dialog_BillConfig_AfterQualityRange(Listing_Standard listing, Bill_Production bill) {
-                if (!billTargetCountCustomFilters.ContainsKey(bill))
+                if (!billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
                     return;
-                var customFilter = billTargetCountCustomFilters[bill];
 
                 customFilter.DrawMenu(listing.GetRect(24f));
 
@@ -42,9 +38,8 @@ namespace CustomThingFilters
                 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
                 static void IsAllowed(ref bool __result, Thing thing, Bill_Production bill, ThingDef def) {
                     if (__result == false) return;
-                    if (!billTargetCountCustomFilters.ContainsKey(bill))
+                    if (!billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
                         return;
-                    var customFilter = billTargetCountCustomFilters[bill];
                     if (!customFilter.IsAllowed(thing))
                         __result = false;
                 }

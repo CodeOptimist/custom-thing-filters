@@ -51,8 +51,7 @@ namespace CustomThingFilters
                 dict[t] = customFilter;
                 if (filter != null)
                     thingFilterCustomFilters[filter] = customFilter;
-            } else if (Scribe.mode == LoadSaveMode.Saving && dict.ContainsKey(t)) {
-                var customFilter = dict[t];
+            } else if (Scribe.mode == LoadSaveMode.Saving && dict.TryGetValue(t, out var customFilter)) {
                 Scribe_Deep.Look(ref customFilter, label);
             }
         }

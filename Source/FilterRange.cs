@@ -21,7 +21,7 @@ namespace CustomThingFilters
             public BaseStatFilterRange(StatThingInfo info) : base(
                 info,
                 $"COCTF_allowedBase{info.statDef.defName}", info.statDef.label, $"<i>{info.statDef.category.label}:</i> {info.statDef.label}",
-                (range, thing) => info.thingDefValues.ContainsKey(thing.def) && range.Includes(info.thingDefValues[thing.def])) {
+                (range, thing) => info.thingDefValues.TryGetValue(thing.def, out var value) && range.Includes(value)) {
             }
         }
 

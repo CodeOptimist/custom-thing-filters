@@ -14,9 +14,8 @@ namespace CustomThingFilters
         static class Patch_StorageAndIngredients
         {
             static void ThingFilterUI_AfterQualityRange(ref float y, float width, ThingFilter filter) {
-                if (!thingFilterCustomFilters.ContainsKey(filter))
+                if (!thingFilterCustomFilters.TryGetValue(filter, out var customFilter))
                     return;
-                var customFilter = thingFilterCustomFilters[filter];
 
                 // copying DrawQualityFilterConfig() re: setting font, etc.
                 customFilter.DrawMenu(new Rect(20f, y, width - 20f, 24f));
@@ -35,9 +34,8 @@ namespace CustomThingFilters
             {
                 [HarmonyPostfix]
                 static void IsAllowed(ThingFilter __instance, ref bool __result, Thing t) {
-                    if (!thingFilterCustomFilters.ContainsKey(__instance))
+                    if (!thingFilterCustomFilters.TryGetValue(__instance, out var customFilter))
                         return;
-                    var customFilter = thingFilterCustomFilters[__instance];
                     if (!customFilter.IsAllowed(t))
                         __result = false;
                 }
@@ -103,12 +101,10 @@ namespace CustomThingFilters
             {
                 [HarmonyPostfix]
                 static void CopyCustomFilter(ThingFilter __instance, ThingFilter other) {
-                    if (!thingFilterCustomFilters.ContainsKey(__instance))
+                    if (!thingFilterCustomFilters.TryGetValue(__instance, out var customFilter))
                         return;
-                    var customFilter = thingFilterCustomFilters[__instance];
-                    if (!thingFilterCustomFilters.ContainsKey(other))
+                    if (!thingFilterCustomFilters.TryGetValue(other, out var otherCustomFilter))
                         return;
-                    var otherCustomFilter = thingFilterCustomFilters[other];
 
                     customFilter.filterRanges.Clear();
                     foreach (var range in otherCustomFilter.filterRanges)
