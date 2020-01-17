@@ -26,7 +26,7 @@ namespace CustomThingFilters
                 customFilter.DrawMenu(listing.GetRect(24f));
 
                 foreach (var range in customFilter.ActiveFilterRanges) {
-                    var rect = listing.GetRect(28f);
+                    var rect = listing.GetRect(44f);
                     range.Draw(rect);
                 }
             }

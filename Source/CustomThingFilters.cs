@@ -83,5 +83,38 @@ namespace CustomThingFilters
                     thingFilterCustomFilters.Add(filter, customFilter);
             }
         }
+
+        class DrawContext : IDisposable
+        {
+            readonly Color guiColor;
+
+            readonly TextAnchor textAnchor;
+
+            readonly GameFont textFont;
+
+            public DrawContext() {
+                guiColor = GUI.color;
+                textFont = Text.Font;
+                textAnchor = Text.Anchor;
+            }
+
+            public Color GuiColor {
+                set => GUI.color = value;
+            }
+
+            public GameFont TextFont {
+                set => Text.Font = value;
+            }
+
+            public TextAnchor TextAnchor {
+                set => Text.Anchor = value;
+            }
+
+            public void Dispose() {
+                GUI.color = guiColor;
+                Text.Font = textFont;
+                Text.Anchor = textAnchor;
+            }
+        }
     }
 }

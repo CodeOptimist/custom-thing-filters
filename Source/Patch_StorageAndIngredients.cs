@@ -21,9 +21,9 @@ namespace CustomThingFilters
                 customFilter.DrawMenu(new Rect(20f, y, width - 20f, 24f));
                 y += 24f;
                 foreach (var range in customFilter.ActiveFilterRanges) {
-                    var rect = new Rect(20f, y, width - 20f, 28f);
+                    var rect = new Rect(20f, y, width - 20f, 44f);
                     range.Draw(rect);
-                    y += 28f;
+                    y += 44f;
                     y += 5f;
                     Text.Font = GameFont.Small;
                 }
