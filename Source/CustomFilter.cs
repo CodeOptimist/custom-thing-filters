@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Verse;
 
@@ -23,12 +24,22 @@ namespace CustomThingFilters
             }
 
             public void ExposeData() {
+                var world = Find.World.GetComponent<World>();
                 foreach (var range in filterRanges) {
+                    var saveLabel = "COCTF_" + World.modVersion + "_" + range.saveLabel;
+                    // handle data renames between versions for compatibility
+                    if (Scribe.mode != LoadSaveMode.Saving) {
+                        if (World.versionCompatibilityLabelMap.TryGetValue(world.dataVersion, out var dict)) {
+                            foreach (var sub in dict)
+                                saveLabel = Regex.Replace(saveLabel, $"^COCTF_{World.modVersion}_" + sub.Key, $"COCTF_{world.dataVersion}" + sub.Value);
+                        }
+                    }
+
                     if (Scribe.mode != LoadSaveMode.Saving || range.isActive || !range.AtDefault())
-                        Scribe_Values.Look(ref range.isActive, $"{range.saveLabel}_isActive", forceSave: !range.AtDefault());
+                        Scribe_Values.Look(ref range.isActive, $"{saveLabel}_isActive", forceSave: !range.AtDefault());
                     // don't save unchanged ranges, it isn't meaningful because mods can affect the min/max of thingdefs
                     if (Scribe.mode != LoadSaveMode.Saving || !range.AtDefault())
-                        Scribe_Values.Look(ref range.inner, $"{range.saveLabel}_range", new FloatRange(-9999999f, -9999999f));
+                        Scribe_Values.Look(ref range.inner, $"{saveLabel}_range", new FloatRange(-9999999f, -9999999f));
                 }
             }
 

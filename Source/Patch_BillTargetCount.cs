@@ -14,13 +14,13 @@ namespace CustomThingFilters
         static class Patch_BillTargetCount
         {
             static bool HasNoActiveFilters(Bill_Production bill) {
-                if (billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
+                if (Find.World.GetComponent<World>().billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
                     return !customFilter.ActiveFilterRanges.Any();
                 return true;
             }
 
             static void Dialog_BillConfig_AfterQualityRange(Listing_Standard listing, Bill_Production bill) {
-                if (!billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
+                if (!Find.World.GetComponent<World>().billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
                     return;
 
                 customFilter.DrawMenu(listing.GetRect(24f));
@@ -38,7 +38,7 @@ namespace CustomThingFilters
                 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
                 static void IsAllowed(ref bool __result, Thing thing, Bill_Production bill, ThingDef def) {
                     if (__result == false) return;
-                    if (!billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
+                    if (!Find.World.GetComponent<World>().billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
                         return;
                     if (!customFilter.IsAllowed(thing))
                         __result = false;

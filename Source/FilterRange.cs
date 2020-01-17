@@ -29,7 +29,7 @@ namespace CustomThingFilters
         {
             public CurStatFilterRange(StatThingInfo info) : base(
                 info,
-                $"COCTF_allowed{info.statDef.defName}", info.statDef.label, $"<i>{info.statDef.category.label}:</i> {info.statDef.label}",
+                $"COCTF_allowedCur{info.statDef.defName}", info.statDef.label, $"<i>{info.statDef.category.label}:</i> {info.statDef.label}",
                 (range, thing) => info.thingDefValues.ContainsKey(thing.def) && range.Includes(thing.GetStatValue(info.statDef))) {
             }
         }
