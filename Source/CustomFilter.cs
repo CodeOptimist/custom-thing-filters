@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -35,11 +36,16 @@ namespace CustomThingFilters
                         }
                     }
 
-                    if (Scribe.mode != LoadSaveMode.Saving || range.isActive || !range.AtDefault())
-                        Scribe_Values.Look(ref range.isActive, $"{saveLabel}_isActive", forceSave: !range.AtDefault());
-                    // don't save unchanged ranges, it isn't meaningful because mods can affect the min/max of thingdefs
-                    if (Scribe.mode != LoadSaveMode.Saving || !range.AtDefault())
-                        Scribe_Values.Look(ref range.inner, $"{saveLabel}_range", new FloatRange(-9999999f, -9999999f));
+                    var hasDefaults = !range.isActive && !range.isRequired && range.AtDefault();
+                    if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.Saving && !hasDefaults) {
+                        Scribe_Values.Look(ref range.isActive, $"{saveLabel}_isActive", forceSave: true);
+                        Scribe_Values.Look(ref range.isRequired, $"{saveLabel}_isRequired", forceSave: true);
+                        if (world.dataVersion == "") range.isRequired = true; // preserve behavior
+
+                        // don't save unchanged ranges, it isn't meaningful because mods can affect the min/max of thingdefs
+                        if (!range.AtDefault())
+                            Scribe_Values.Look(ref range.inner, $"{saveLabel}_range", new FloatRange(-9999999f, -9999999f));
+                    }
                 }
             }
 
@@ -51,15 +57,34 @@ namespace CustomThingFilters
                 var font = Text.Font;
                 Text.Font = GameFont.Small;
 
-                FloatMenu NewMenuFromRanges(IEnumerable<FilterRange> ranges) {
-                    var floatMenuOptions = ranges.OrderBy(x => x.menuLabel).Select(x => new FloatMenuOption((x.isActive ? "✔ " : " ") + x.menuLabel, () => { x.isActive = !x.isActive; }));
-                    return new FloatMenu(floatMenuOptions.ToList());
+                void MenuFromRanges(IEnumerable<FilterRange> ranges, string title, Func<FilterRange, bool, bool> checkFunc, Func<FilterRange, string> labelFunc) {
+                    var menuOptions = ranges.OrderBy(x => x.menuLabel(x))
+                        .Select(
+                            x => new FloatMenuOption(
+                                $"{(checkFunc(x, false) ? "✔ " : "")}{labelFunc(x)}",
+                                () => { checkFunc(x, true); }))
+                        .ToList();
+                    if (menuOptions.Any()) Find.WindowStack.Add(new FloatMenu(menuOptions, title));
                 }
 
-                if (Widgets.ButtonText(new Rect(rect.x, rect.y, rect.width / 2, rect.height), "Base stat"))
-                    Find.WindowStack.Add(NewMenuFromRanges(filterRanges.OfType<BaseStatFilterRange>().Cast<FilterRange>()));
-                if (Widgets.ButtonText(new Rect(rect.x + rect.width / 2, rect.y, rect.width / 2, rect.height), "Current stat"))
-                    Find.WindowStack.Add(NewMenuFromRanges(filterRanges.OfType<CurStatFilterRange>().Cast<FilterRange>()));
+                bool Active(FilterRange range, bool isFlip) {
+                    if (isFlip) range.isActive = !range.isActive;
+                    return range.isActive;
+                }
+
+                bool Required(FilterRange range, bool isFlip) {
+                    if (isFlip) range.isRequired = !range.isRequired;
+                    return range.isRequired;
+                }
+
+                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 0 / 8, rect.y, rect.width * 3 / 8, rect.height), "Base stat"))
+                    MenuFromRanges(filterRanges.OfType<BaseStatFilterRange>().Cast<FilterRange>(), "Base stat filters", Active, x => x.menuLabel(x));
+                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 3 / 8, rect.y, rect.width * 1 / 8, rect.height), "A"))
+                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive).Cast<FilterRange>(), "Active stat filters", Active, x => x.widgetLabel(x));
+                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 4 / 8, rect.y, rect.width * 1 / 8, rect.height), "R"))
+                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive).Cast<FilterRange>(), "Required stats", Required, x => x.widgetLabel(x));
+                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 5 / 8, rect.y, rect.width * 3 / 8, rect.height), "Current stat"))
+                    MenuFromRanges(filterRanges.OfType<CurStatFilterRange>().Cast<FilterRange>(), "Current stat filters", Active, x => x.menuLabel(x));
 
                 Text.Font = font;
             }

@@ -13,10 +13,10 @@ namespace CustomThingFilters
     {
         static class Patch_BillTargetCount
         {
-            static bool HasNoActiveFilters(Bill_Production bill) {
+            static bool HasActiveNonDefaultOrReqFilters(Bill_Production bill) {
                 if (Find.World.GetComponent<World>().billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
-                    return !customFilter.ActiveFilterRanges.Any();
-                return true;
+                    return customFilter.ActiveFilterRanges.Any(x => !x.AtDefault() || x.isRequired);
+                return false;
             }
 
             static void Dialog_BillConfig_AfterQualityRange(Listing_Standard listing, Bill_Production bill) {
@@ -50,9 +50,7 @@ namespace CustomThingFilters
             {
                 [HarmonyTranspiler]
                 static IEnumerable<CodeInstruction> SkipManualCount(IEnumerable<CodeInstruction> instructions) {
-                    // in our case having an active filter is a deliberate action so let's apply it even if the range is the default "anything"
-                    // (e.g. we may want things of a def that show a stat, period, regardless of value)
-                    var myMethod = AccessTools.Method(typeof(Patch_BillTargetCount), nameof(HasNoActiveFilters));
+                    var myMethod = AccessTools.Method(typeof(Patch_BillTargetCount), nameof(HasActiveNonDefaultOrReqFilters));
                     var codes = instructions.ToList();
                     for (var i = 0; i < codes.Count; i++)
                         if (codes[i].operand is FieldInfo fieldInfo && fieldInfo == AccessTools.Field(typeof(Bill_Production), nameof(Bill_Production.hpRange))) {
@@ -60,7 +58,7 @@ namespace CustomThingFilters
                                 i - 1, new List<CodeInstruction> {
                                     new CodeInstruction(OpCodes.Ldarg_1),
                                     new CodeInstruction(OpCodes.Call, myMethod),
-                                    new CodeInstruction(OpCodes.Brfalse, codes[i + 3].operand)
+                                    new CodeInstruction(OpCodes.Brtrue, codes[i + 3].operand)
                                 });
                             break;
                         }

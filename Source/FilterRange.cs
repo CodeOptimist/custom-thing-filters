@@ -11,7 +11,7 @@ namespace CustomThingFilters
 
         public abstract class StatFilterRange : FilterRange
         {
-            protected StatFilterRange(StatThingInfo info, string saveLabel, string widgetLabel, string menuLabel,
+            protected StatFilterRange(StatThingInfo info, string saveLabel, Func<FilterRange, string> widgetLabel, Func<FilterRange, string> menuLabel,
                 Func<FilterRange, Thing, bool> isAllowed) : base(saveLabel, widgetLabel, menuLabel, info.statDef.toStringStyle, info.min, info.max, isAllowed) {
             }
         }
@@ -20,8 +20,10 @@ namespace CustomThingFilters
         {
             public BaseStatFilterRange(StatThingInfo info) : base(
                 info,
-                $"COCTF_allowedBase{info.statDef.defName}", info.statDef.label, $"<i>{info.statDef.category.label}:</i> {info.statDef.label}",
-                (range, thing) => info.thingDefValues.TryGetValue(thing.def, out var value) && range.Includes(value)) {
+                $"allowedBase{info.statDef.defName}",
+                x => $"(B{(x.isRequired ? "*" : "")}) {info.statDef.label}",
+                x => $"<i>{info.statDef.category.label}:</i> {info.statDef.label}",
+                (range, thing) => !info.thingDefValues.ContainsKey(thing.def) && !range.isRequired || info.thingDefValues.TryGetValue(thing.def, out var value) && range.Includes(value)) {
             }
         }
 
@@ -29,22 +31,26 @@ namespace CustomThingFilters
         {
             public CurStatFilterRange(StatThingInfo info) : base(
                 info,
-                $"COCTF_allowedCur{info.statDef.defName}", info.statDef.label, $"<i>{info.statDef.category.label}:</i> {info.statDef.label}",
-                (range, thing) => info.thingDefValues.ContainsKey(thing.def) && range.Includes(thing.GetStatValue(info.statDef))) {
+                $"allowedCur{info.statDef.defName}",
+                x => $"(C{(x.isRequired ? "*" : "")}) {info.statDef.label}",
+                x => $"<i>{info.statDef.category.label}:</i> {info.statDef.label}",
+                (range, thing) => !info.thingDefValues.ContainsKey(thing.def) && !range.isRequired || info.thingDefValues.ContainsKey(thing.def) && range.Includes(thing.GetStatValue(info.statDef))) {
             }
         }
 
         public abstract class FilterRange : ICloneable
         {
             protected readonly float min, max; // the extreme edges
-            public readonly string saveLabel, widgetLabel, menuLabel;
+            public readonly string saveLabel;
             protected readonly ToStringStyle toStringStyle;
-
             public FloatRange inner; // the user-set range within edges
-            public bool isActive;
+            public bool isActive, isRequired;
             protected Func<FilterRange, Thing, bool> isAllowed;
 
-            protected FilterRange(string saveLabel, string widgetLabel, string menuLabel, ToStringStyle toStringStyle, float min, float max, Func<FilterRange, Thing, bool> isAllowed) {
+            public Func<FilterRange, string> widgetLabel, menuLabel;
+
+            protected FilterRange(string saveLabel, Func<FilterRange, string> widgetLabel, Func<FilterRange, string> menuLabel, ToStringStyle toStringStyle, float min, float max,
+                Func<FilterRange, Thing, bool> isAllowed) {
                 this.saveLabel = saveLabel;
                 this.widgetLabel = widgetLabel;
                 this.menuLabel = menuLabel;
@@ -73,7 +79,7 @@ namespace CustomThingFilters
 
             public void Draw(Rect rect) {
                 filterRangeTypeToDraw = GetType();
-                Widgets.FloatRange(rect, (int) rect.y, ref inner, min, max, widgetLabel, toStringStyle);
+                Widgets.FloatRange(rect, (int) rect.y, ref inner, min, max, widgetLabel(this), toStringStyle);
                 filterRangeTypeToDraw = null;
             }
 
