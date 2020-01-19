@@ -19,7 +19,7 @@ namespace CustomThingFilters
 
         public override void DefsLoaded() {
             SettingHandle<T> GetSettingHandle<T>(string settingName, T defaultValue) {
-                return Settings.GetHandle(settingName, $"COCTF_{settingName}Setting_title".Translate(), $"COCTF_{settingName}Setting_description".Translate(), defaultValue);
+                return Settings.GetHandle(settingName, $"COCTF_{settingName}_SettingTitle".Translate(), $"COCTF_{settingName}_SettingDesc".Translate(), defaultValue);
             }
 
             fixFilteredProductStackCounts = GetSettingHandle("fixFilteredProductStackCounts", true);

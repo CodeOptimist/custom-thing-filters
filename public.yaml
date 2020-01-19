@@ -1,29 +1,58 @@
 ﻿---
-header: |-
-  [h1]Like this? Try my [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1861437314]Assorted Alterations[/url] mod![/h1]
-
-  [h1]Quality of life modifications.[/h1]
-
+name: Stockpile & Ingredient Filters
+identifier: COCustomThingFilters
+prefix: COCTF
+repo: &repo https://github.com/CodeOptimist/rimworld-custom-thing-filters
+url: *repo
+intro: |-
   Filter things by base or current stat (more later).
+header: |+
+  
+  
+  [h1]Custom Thing Filters[/h1]
+  
+footer: |+
+
 
 features:
 - title: Stockpile filters.
   at: 1.0.0
-  flavor: |-
-    Your most potent medicine; your most deadly arsenal!
-    Clear inflammables from the fire path!
-    Send ugly sculptures to the trade beacon.
+  desc: |-
+    [i]Your most potent medicine; your most deadly arsenal!
+    Clear flammables from the fire path!
+    Send ugly sculptures to the trade beacon.[/i]
 
 - title: Ingredient filters.
   at: 1.0.0
-  flavor: |-
-    Fast deterioration? Use those first.
-    Smelt weapons too cheap to sell!
+  desc: |-
+    [i]Fast deterioration? Use those first.
+    Smelt weapons too cheap to sell![/i]
 
 - title: Product count filters.
   at: 1.0.0
-  flavor: |-
-    Sculpture not pretty enough? Make another!
+  desc: |-
+    [i]Sculpture not pretty enough? Make another![/i]
+
+- at: 2.0.0
+  desc: |-
+    Fixed scrollbars.
+    Finally a proper release!
+    Join the Discord if you'd like to share your thoughts or chat: https://discord.gg/pnZGQAN
+
+- title: Text field input.
+  at: 2.0.0
+  desc: |-
+    Because sliders are too imprecise for some ranges.
+  news: |-
+    [i]Thanks @Rampart and @Aaronthelemon.[/i]
+    
+- title: Filter by property existence.
+  at: 2.0.0
+  desc: |-
+    Unless you mark them [b]R[/b]equired, filters only apply to items with the property (e.g. stat).
+    [i]Sometimes you want [/i]only[i] flammables and other times you want to limit flammability.[/i]
+  news: |-
+    [i]Thanks @ZzZombo and @XXX_420_Bad_Boy.[/i]
 
 - title: Performance.
   at: 1.0.0
@@ -37,10 +66,7 @@ features:
   settings:
     - name: fixFilteredProductStackCounts
 
-footer: |-
-
-  [h1][url=https://github.com/CodeOptimist/custom-thing-filters]GitHub[/url][/h1]
-
-  [h1]Hello World![/h1]
-  As a programmer who loves this game, I wanted to finally share the improvements and tweaks I've benefited from back to the community, just as so many other modders have improved my experience. I love the small modifications to vanilla that have a huge impact, and am proud to be in the company of others passionate about not necessarily new guns and mechanics and effects, but quality of life on the Rim.
-  - [url=https://codeoptimism.com][i]Christopher Galpin (CodeOptimist)[/i][/url]
+- at: 1.1.0
+  desc: |-
+    Can now filter by either [i]base stat[/i] or [i]current stat[/i].
+    |img:Things/Mote/BattleSymbols/Downed|caption:Be aware existing filters have become "current stat" filters!
