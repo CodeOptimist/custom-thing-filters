@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -13,22 +14,6 @@ namespace CustomThingFilters
     {
         static class Patch_StorageAndIngredients
         {
-            static void ThingFilterUI_AfterQualityRange(ref float y, float width, ThingFilter filter) {
-                if (!Find.World.GetComponent<World>().thingFilterCustomFilters.TryGetValue(filter, out var customFilter))
-                    return;
-
-                // copying DrawQualityFilterConfig() re: setting font, etc.
-                customFilter.DrawMenu(new Rect(20f, y, width - 20f, 24f));
-                y += 24f;
-                foreach (var range in customFilter.ActiveFilterRanges) {
-                    var rect = new Rect(20f, y, width - 20f, 44f);
-                    range.Draw(rect);
-                    y += 44f;
-                    y += 5f;
-                    Text.Font = GameFont.Small;
-                }
-            }
-
             [HarmonyPatch(typeof(ThingFilter), nameof(ThingFilter.Allows), typeof(Thing))]
             static class ThingFilter_Allows_Patch
             {
@@ -44,17 +29,52 @@ namespace CustomThingFilters
             [HarmonyPatch(typeof(ThingFilterUI), nameof(ThingFilterUI.DoThingFilterConfigWindow))]
             static class ThingFilterUI_DoThingFilterConfigWindow_Patch
             {
-                [HarmonyTranspiler]
-                static IEnumerable<CodeInstruction> AfterQualityRange(IEnumerable<CodeInstruction> instructions) {
-                    var myMethod = AccessTools.Method(typeof(Patch_StorageAndIngredients), nameof(ThingFilterUI_AfterQualityRange));
-                    var codes = instructions.ToList();
-                    for (var i = 0; i < codes.Count; i++)
-                        if (codes[i].operand is MethodInfo method && method == AccessTools.Method(typeof(ThingFilterUI), "DrawQualityFilterConfig")) {
-                            codes.InsertRange(i + 2, codes.GetRange(i - 4, 4).Concat(new CodeInstruction(OpCodes.Call, myMethod)));
-                            break;
-                        }
+                static List<CodeInstruction> codes, newCodes;
+                static int i;
 
-                    return codes.AsEnumerable();
+                static void InsertCode(int offset, Func<bool> when, Func<List<CodeInstruction>> what, bool bringLabels = false) {
+                    CustomThingFilters.InsertCode(ref i, ref codes, ref newCodes, offset, when, what, bringLabels);
+                }
+
+                static void FilterRanges(ref float y, float width, ThingFilter filter) {
+                    if (!Find.World.GetComponent<World>().thingFilterCustomFilters.TryGetValue(filter, out var customFilter))
+                        return;
+
+                    // copying DrawQualityFilterConfig() re: setting font, width, etc.
+                    width -= 20f;
+                    customFilter.DrawMenu(new Rect(20f, y, width, 24f));
+                    y += 24f;
+                    foreach (var range in customFilter.ActiveFilterRanges) {
+                        var height = range.Height(width);
+                        var rect = new Rect(20f, y, width, height);
+                        range.Draw(rect);
+                        y += height;
+                        y += 5f;
+                        Text.Font = GameFont.Small;
+                    }
+                }
+
+                [HarmonyTranspiler]
+                static IEnumerable<CodeInstruction> CustomFilter(IEnumerable<CodeInstruction> instructions) {
+                    codes = instructions.ToList();
+                    newCodes = new List<CodeInstruction>();
+                    i = 0;
+
+                    InsertCode(
+                        1,
+                        () => codes[i].operand is MethodInfo method && method == AccessTools.Method(typeof(ThingFilterUI), "DrawQualityFilterConfig"),
+                        () =>
+                            new List<CodeInstruction> {
+                                new CodeInstruction(codes[i - 4]),
+                                new CodeInstruction(codes[i - 3]),
+                                new CodeInstruction(codes[i - 2]),
+                                new CodeInstruction(codes[i - 1]),
+                                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ThingFilterUI_DoThingFilterConfigWindow_Patch), nameof(FilterRanges))),
+                            }, true);
+
+                    for (; i < codes.Count; i++)
+                        newCodes.Add(codes[i]);
+                    return newCodes.AsEnumerable();
                 }
             }
 

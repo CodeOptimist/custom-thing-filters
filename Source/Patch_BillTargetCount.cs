@@ -15,12 +15,6 @@ namespace CustomThingFilters
     {
         static class Patch_BillTargetCount
         {
-            static bool HasActiveNonDefaultOrReqFilters(Bill_Production bill) {
-                if (Find.World.GetComponent<World>().billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
-                    return customFilter.ActiveFilterRanges.Any(x => !x.AtDefault() || x.isRequired);
-                return false;
-            }
-			
             [HarmonyPatch(typeof(RecipeWorkerCounter), nameof(RecipeWorkerCounter.CountValidThing))]
             static class RecipeWorkerCounter_CountValidThing_Patch
             {
@@ -38,22 +32,37 @@ namespace CustomThingFilters
             [HarmonyPatch(typeof(RecipeWorkerCounter), nameof(RecipeWorkerCounter.CountProducts))]
             static class RecipeWorkerCounter_CountProducts_Patch
             {
+                static List<CodeInstruction> codes, newCodes;
+                static int i;
+
+                static void InsertCode(int offset, Func<bool> when, Func<List<CodeInstruction>> what, bool bringLabels = false) {
+                    CustomThingFilters.InsertCode(ref i, ref codes, ref newCodes, offset, when, what, bringLabels);
+                }
+
+                static bool HasActiveNonDefaultOrReqFilters(Bill_Production bill) {
+                    if (Find.World.GetComponent<World>().billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
+                        return customFilter.ActiveFilterRanges.Any(x => !x.AtDefault() || x.isRequired);
+                    return false;
+                }
+
                 [HarmonyTranspiler]
                 static IEnumerable<CodeInstruction> SkipManualCount(IEnumerable<CodeInstruction> instructions) {
-                    var myMethod = AccessTools.Method(typeof(Patch_BillTargetCount), nameof(HasActiveNonDefaultOrReqFilters));
-                    var codes = instructions.ToList();
-                    for (var i = 0; i < codes.Count; i++)
-                        if (codes[i].operand is FieldInfo fieldInfo && fieldInfo == AccessTools.Field(typeof(Bill_Production), nameof(Bill_Production.hpRange))) {
-                            codes.InsertRange(
-                                i - 1, new List<CodeInstruction> {
-                                    new CodeInstruction(OpCodes.Ldarg_1),
-                                    new CodeInstruction(OpCodes.Call, myMethod),
-                                    new CodeInstruction(OpCodes.Brtrue, codes[i + 3].operand)
-                                });
-                            break;
-                        }
+                    codes = instructions.ToList();
+                    newCodes = new List<CodeInstruction>();
+                    i = 0;
 
-                    return codes.AsEnumerable();
+                    InsertCode(
+                        -1,
+                        () => codes[i].operand is FieldInfo field && field == AccessTools.Field(typeof(Bill_Production), nameof(Bill_Production.hpRange)),
+                        () => new List<CodeInstruction> {
+                            new CodeInstruction(OpCodes.Ldarg_1),
+                            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RecipeWorkerCounter_CountProducts_Patch), nameof(HasActiveNonDefaultOrReqFilters))),
+                            new CodeInstruction(OpCodes.Brtrue, codes[i + 3].operand),
+                        });
+
+                    for (; i < codes.Count; i++)
+                        newCodes.Add(codes[i]);
+                    return newCodes.AsEnumerable();
                 }
             }
 
