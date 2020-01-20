@@ -113,7 +113,7 @@ namespace CustomThingFilters
                     if (filterRangeTypeToDraw == null) return true;
                     ___curDragEnd = ref _curDragEnd;
 
-                    var fieldRect = new Rect(rect) {height = 25f, width = 65f};
+                    var fieldRect = new Rect(rect) {height = 25f, width = FilterRange.fieldWidth};
                     fieldRect.yMin += 4f;
                     if (TryToFloatByStyle(Widgets.TextField(fieldRect, range.min.ToStringByStyle(valueStyle)), out var inputMin, valueStyle)) {
                         range.min = inputMin;
@@ -130,14 +130,14 @@ namespace CustomThingFilters
 
                     var hoverRect = rect;
                     // line up ends
-                    rect.xMin += 8f;
-                    rect.xMax -= 8f;
+                    rect.xMin += FilterRange.marginWidth;
+                    rect.xMax -= FilterRange.marginWidth;
 
                     Rect leftSliderRect, rightSliderRect, lineRect;
                     using (var labelContext = new DrawContext {GuiColor = ___RangeControlTextColor, TextFont = GameFont.Tiny, TextAnchor = TextAnchor.UpperCenter}) {
                         var labelRect = new Rect(rect);
-                        labelRect.xMin += fieldRect.width;
-                        labelRect.xMax -= fieldRect.width;
+                        labelRect.xMin += fieldRect.width - FilterRange.labelFieldCrossWidth;
+                        labelRect.xMax -= fieldRect.width - FilterRange.labelFieldCrossWidth;
                         labelRect.yMin -= 2f;
                         Widgets.Label(labelRect, labelKey);
 

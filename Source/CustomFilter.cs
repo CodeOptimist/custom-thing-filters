@@ -12,6 +12,8 @@ namespace CustomThingFilters
         class CustomFilter : IExposable
         {
             public readonly List<FilterRange> filterRanges = new List<FilterRange>();
+            public float billTargetCount_Height;
+            public Vector2 billTargetCount_ScrollPosition;
 
             public CustomFilter() {
                 foreach (var info in statThingInfos) {
@@ -83,7 +85,7 @@ namespace CustomThingFilters
                     MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive).Cast<FilterRange>(), "Active stat filters", Active, x => x.widgetLabel(x));
                 if (Widgets.ButtonText(new Rect(rect.x + rect.width * 4 / 8, rect.y, rect.width * 1 / 8, rect.height), "R"))
                     MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive).Cast<FilterRange>(), "Required stats", Required, x => x.widgetLabel(x));
-                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 5 / 8, rect.y, rect.width * 3 / 8, rect.height), "Current stat"))
+                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 5 / 8, rect.y, rect.width * 3 / 8, rect.height), "Cur. stat"))
                     MenuFromRanges(filterRanges.OfType<CurStatFilterRange>().Cast<FilterRange>(), "Current stat filters", Active, x => x.menuLabel(x));
 
                 Text.Font = font;

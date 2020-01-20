@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Harmony;
 using HugsLib;
 using HugsLib.Settings;
 using RimWorld;
 using RimWorld.Planet;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using Verse;
 
@@ -28,6 +30,28 @@ namespace CustomThingFilters
 
         public override void SceneLoaded(Scene scene) {
             StatThingInfo.SceneLoaded(scene);
+        }
+
+        static void InsertCode(ref int i, ref List<CodeInstruction> codes, ref List<CodeInstruction> newCodes, int offset, Func<bool> when, Func<List<CodeInstruction>> what,
+            bool bringLabels = false) {
+            for (i -= offset; i < codes.Count; i++) {
+                if (i >= 0 && when()) {
+                    var whatCodes = what();
+                    if (bringLabels) {
+                        whatCodes[0].labels.AddRange(codes[i + offset].labels);
+                        codes[i + offset].labels.Clear();
+                    }
+
+                    newCodes.AddRange(whatCodes);
+                    if (offset > 0)
+                        i += offset;
+                    else
+                        newCodes.AddRange(codes.GetRange(i + offset, Math.Abs(offset)));
+                    break;
+                }
+
+                newCodes.Add(codes[i + offset]);
+            }
         }
 
         class World : WorldComponent

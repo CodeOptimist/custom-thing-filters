@@ -40,6 +40,10 @@ namespace CustomThingFilters
 
         public abstract class FilterRange : ICloneable
         {
+            public static int marginWidth = 8;
+            public static int fieldWidth = 60;
+            public static int labelFieldCrossWidth = 3;
+
             protected readonly float min, max; // the extreme edges
             public readonly string saveLabel;
             protected readonly ToStringStyle toStringStyle;
@@ -90,6 +94,16 @@ namespace CustomThingFilters
                     inner.min = min;
                     inner.max = max;
                 }
+            }
+
+            public float Height(float width) {
+                var font = Text.Font;
+                Text.Font = GameFont.Tiny;
+                var calcTextHeight = Text.CalcHeight(widgetLabel(this), width - fieldWidth * 2 - marginWidth * 2 + labelFieldCrossWidth * 2);
+                Text.Font = font;
+                const int twoLineHeight = 33;
+                var result = Math.Max(twoLineHeight, calcTextHeight) + 10f;
+                return result;
             }
         }
     }
