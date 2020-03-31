@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Harmony;
+using HarmonyLib;
 using HugsLib;
 using HugsLib.Settings;
 using RimWorld;
@@ -15,7 +15,6 @@ namespace CustomThingFilters
     {
         static readonly List<StatThingInfo> statThingInfos = new List<StatThingInfo>();
         static SettingHandle<bool> fixFilteredProductStackCounts;
-        public override string ModIdentifier => "COCustomThingFilters";
 
         public override void DefsLoaded() {
             SettingHandle<T> GetSettingHandle<T>(string settingName, T defaultValue) {

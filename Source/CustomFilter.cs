@@ -80,13 +80,13 @@ namespace CustomThingFilters
                 }
 
                 if (Widgets.ButtonText(new Rect(rect.x + rect.width * 0 / 8, rect.y, rect.width * 3 / 8, rect.height), "Base stat"))
-                    MenuFromRanges(filterRanges.OfType<BaseStatFilterRange>().Cast<FilterRange>(), "Base stat filters", Active, x => x.menuLabel(x));
+                    MenuFromRanges(filterRanges.OfType<BaseStatFilterRange>(), "Base stat filters", Active, x => x.menuLabel(x));
                 if (Widgets.ButtonText(new Rect(rect.x + rect.width * 3 / 8, rect.y, rect.width * 1 / 8, rect.height), "A"))
-                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive).Cast<FilterRange>(), "Active stat filters", Active, x => x.widgetLabel(x));
+                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive), "Active stat filters", Active, x => x.widgetLabel(x));
                 if (Widgets.ButtonText(new Rect(rect.x + rect.width * 4 / 8, rect.y, rect.width * 1 / 8, rect.height), "R"))
-                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive).Cast<FilterRange>(), "Required stats", Required, x => x.widgetLabel(x));
+                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive), "Required stats", Required, x => x.widgetLabel(x));
                 if (Widgets.ButtonText(new Rect(rect.x + rect.width * 5 / 8, rect.y, rect.width * 3 / 8, rect.height), "Cur. stat"))
-                    MenuFromRanges(filterRanges.OfType<CurStatFilterRange>().Cast<FilterRange>(), "Current stat filters", Active, x => x.menuLabel(x));
+                    MenuFromRanges(filterRanges.OfType<CurStatFilterRange>(), "Current stat filters", Active, x => x.menuLabel(x));
 
                 Text.Font = font;
             }

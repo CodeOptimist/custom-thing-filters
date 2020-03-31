@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
-using Harmony;
+using HarmonyLib;
 using Verse;
 
 namespace CustomThingFilters
@@ -18,9 +18,9 @@ namespace CustomThingFilters
                 CustomThingFilters.InsertCode(ref i, ref codes, ref newCodes, offset, when, what, bringLabels);
             }
 
-            public static void DefsLoaded(HarmonyInstance harmonyInst) {
+            public static void DefsLoaded(Harmony harmony) {
                 if (fixFilteredProductStackCounts) {
-                    harmonyInst.Patch(
+                    harmony.Patch(
                         AccessTools.Method(typeof(RecipeWorkerCounter), nameof(RecipeWorkerCounter.CountValidThings)),
                         transpiler: new HarmonyMethod(typeof(Patch_BugFixes), nameof(ProductStackCounts)));
                 }

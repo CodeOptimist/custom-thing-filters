@@ -1,9 +1,11 @@
 ﻿---
 name: Stockpile & Ingredient Filters
-identifier: COCustomThingFilters
-prefix: COCTF
+packageId: CodeOptimist.CustomThingFilters
 repo: &repo https://github.com/CodeOptimist/rimworld-custom-thing-filters
 url: *repo
+supportedVersions:
+  - 1.0
+  - 1.1
 intro: |-
   Filter things by base or current stat (more later).
 header: |+
