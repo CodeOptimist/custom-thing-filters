@@ -19,7 +19,7 @@ namespace CustomThingFilters
             {
                 [HarmonyPostfix]
                 static void IsAllowed(ThingFilter __instance, ref bool __result, Thing t) {
-                    if (!Find.World.GetComponent<World>().thingFilterCustomFilters.TryGetValue(__instance, out var customFilter))
+                    if (!Find.World.GetComponent<MyWorldComponent>().thingFilterCustomFilters.TryGetValue(__instance, out var customFilter))
                         return;
                     if (!customFilter.IsAllowed(t))
                         __result = false;
@@ -37,7 +37,7 @@ namespace CustomThingFilters
                 }
 
                 static void FilterRanges(ref float y, float width, ThingFilter filter) {
-                    if (!Find.World.GetComponent<World>().thingFilterCustomFilters.TryGetValue(filter, out var customFilter))
+                    if (!Find.World.GetComponent<MyWorldComponent>().thingFilterCustomFilters.TryGetValue(filter, out var customFilter))
                         return;
 
                     // copying DrawQualityFilterConfig() re: setting font, width, etc.
@@ -83,7 +83,7 @@ namespace CustomThingFilters
             {
                 [HarmonyPostfix]
                 static void ExposeCustomFilter(StorageSettings __instance) {
-                    var world = Find.World.GetComponent<World>();
+                    var world = Find.World.GetComponent<MyWorldComponent>();
                     world.ExposeCustomFilter(world.storageSettingsCustomFilters, __instance, __instance.filter, "COCTF_thingFilter");
                 }
             }
@@ -93,7 +93,7 @@ namespace CustomThingFilters
             {
                 [HarmonyPostfix]
                 static void ExposeCustomFilters(Bill __instance) {
-                    var world = Find.World.GetComponent<World>();
+                    var world = Find.World.GetComponent<MyWorldComponent>();
                     world.ExposeCustomFilter(world.billTargetCountCustomFilters, __instance, null, "COCTF_targetCountFilter");
                     world.ExposeCustomFilter(world.billCustomFilters, __instance, __instance.ingredientFilter, "COCTF_thingFilter");
                 }
@@ -104,7 +104,7 @@ namespace CustomThingFilters
             {
                 [HarmonyPostfix]
                 static void CreateCustomFilter(StorageSettings __instance) {
-                    var world = Find.World.GetComponent<World>();
+                    var world = Find.World.GetComponent<MyWorldComponent>();
                     world.CreateCustomFilter(world.storageSettingsCustomFilters, __instance, __instance.filter);
                 }
             }
@@ -114,7 +114,7 @@ namespace CustomThingFilters
             {
                 [HarmonyPostfix]
                 static void CreateCustomFilters(Bill __instance) {
-                    var world = Find.World.GetComponent<World>();
+                    var world = Find.World.GetComponent<MyWorldComponent>();
                     world.CreateCustomFilter(world.billTargetCountCustomFilters, __instance, null);
                     world.CreateCustomFilter(world.billCustomFilters, __instance, __instance.ingredientFilter);
                 }
@@ -125,7 +125,7 @@ namespace CustomThingFilters
             {
                 [HarmonyPostfix]
                 static void CopyCustomFilter(ThingFilter __instance, ThingFilter other) {
-                    var world = Find.World.GetComponent<World>();
+                    var world = Find.World.GetComponent<MyWorldComponent>();
                     if (!world.thingFilterCustomFilters.TryGetValue(__instance, out var customFilter))
                         return;
                     if (!world.thingFilterCustomFilters.TryGetValue(other, out var otherCustomFilter))

@@ -53,7 +53,7 @@ namespace CustomThingFilters
             }
         }
 
-        class World : WorldComponent
+        class MyWorldComponent : WorldComponent
         {
             public static string modVersion;
 
@@ -67,7 +67,7 @@ namespace CustomThingFilters
             public readonly Dictionary<ThingFilter, CustomFilter> thingFilterCustomFilters = new Dictionary<ThingFilter, CustomFilter>();
             public string dataVersion;
 
-            public World(RimWorld.Planet.World world) : base(world) {
+            public MyWorldComponent(World world) : base(world) {
                 modVersion = typeof(CustomThingFilters).Assembly.GetName().Version.ToString();
                 modVersion = modVersion.Substring(0, modVersion.LastIndexOf(".", StringComparison.Ordinal)).Replace(".", "_");
             }

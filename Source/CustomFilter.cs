@@ -27,14 +27,14 @@ namespace CustomThingFilters
             }
 
             public void ExposeData() {
-                var world = Find.World.GetComponent<World>();
+                var world = Find.World.GetComponent<MyWorldComponent>();
                 foreach (var range in filterRanges) {
-                    var saveLabel = "COCTF_" + World.modVersion + "_" + range.saveLabel;
+                    var saveLabel = "COCTF_" + MyWorldComponent.modVersion + "_" + range.saveLabel;
                     // handle data renames between versions for compatibility
                     if (Scribe.mode != LoadSaveMode.Saving) {
-                        if (World.versionCompatibilityLabelMap.TryGetValue(world.dataVersion, out var dict)) {
+                        if (MyWorldComponent.versionCompatibilityLabelMap.TryGetValue(world.dataVersion, out var dict)) {
                             foreach (var sub in dict)
-                                saveLabel = Regex.Replace(saveLabel, $"^COCTF_{World.modVersion}_" + sub.Key, $"COCTF_{world.dataVersion}" + sub.Value);
+                                saveLabel = Regex.Replace(saveLabel, $"^COCTF_{MyWorldComponent.modVersion}_" + sub.Key, $"COCTF_{world.dataVersion}" + sub.Value);
                         }
                     }
 
