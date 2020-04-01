@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using RimWorld;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Verse;
 using Debug = System.Diagnostics.Debug;
 
@@ -50,10 +49,7 @@ namespace CustomThingFilters
             }
 
             [SuppressMessage("ReSharper", "UnusedParameter.Local")]
-            public static void SceneLoaded(Scene scene) {
-                if (!GenScene.InPlayScene)
-                    return;
-
+            public static void WorldLoaded() {
                 // some mods use MakeThing() with their custom stats, which is going to fail unless a scene is loaded
                 foreach (var statDef in needThingStats) {
                     var info = CreateInstance(statDef);

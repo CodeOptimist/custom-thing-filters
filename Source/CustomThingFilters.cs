@@ -6,7 +6,6 @@ using HugsLib.Settings;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Verse;
 
 namespace CustomThingFilters
@@ -34,8 +33,8 @@ namespace CustomThingFilters
             StatThingInfo.DefsLoaded();
         }
 
-        public override void SceneLoaded(Scene scene) {
-            StatThingInfo.SceneLoaded(scene);
+        public override void WorldLoaded() {
+            StatThingInfo.WorldLoaded();
         }
 
         static void InsertCode(ref int i, ref List<CodeInstruction> codes, ref List<CodeInstruction> newCodes, int offset, Func<bool> when, Func<List<CodeInstruction>> what,
