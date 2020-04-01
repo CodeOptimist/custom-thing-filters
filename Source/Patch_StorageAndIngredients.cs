@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
@@ -62,7 +61,7 @@ namespace CustomThingFilters
 
                     InsertCode(
                         1,
-                        () => codes[i].operand is MethodInfo method && method == AccessTools.Method(typeof(ThingFilterUI), "DrawQualityFilterConfig"),
+                        () => codes[i].Calls(AccessTools.Method(typeof(ThingFilterUI), "DrawQualityFilterConfig")),
                         () =>
                             new List<CodeInstruction> {
                                 new CodeInstruction(codes[i - 4]),

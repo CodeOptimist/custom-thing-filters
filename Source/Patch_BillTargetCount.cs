@@ -53,7 +53,7 @@ namespace CustomThingFilters
 
                     InsertCode(
                         -1,
-                        () => codes[i].operand is FieldInfo field && field == AccessTools.Field(typeof(Bill_Production), nameof(Bill_Production.hpRange)),
+                        () => codes[i].LoadsField(AccessTools.Field(typeof(Bill_Production), nameof(Bill_Production.hpRange)), true),
                         () => new List<CodeInstruction> {
                             new CodeInstruction(OpCodes.Ldarg_1),
                             new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RecipeWorkerCounter_CountProducts_Patch), nameof(HasActiveNonDefaultOrReqFilters))),
@@ -121,8 +121,7 @@ namespace CustomThingFilters
 
                     InsertCode(
                         -11,
-                        () => codes[i].operand is MethodInfo hitMethod && hitMethod == AccessTools.Method(typeof(Widgets), nameof(Widgets.FloatRange))
-                                                                       && codes[i - 2].operand is string name && name == "HitPoints",
+                        () => codes[i].Calls(AccessTools.Method(typeof(Widgets), nameof(Widgets.FloatRange))) && codes[i - 2].operand is string name && name == "HitPoints",
                         () => new List<CodeInstruction> {
                             new CodeInstruction(codes[i - 11]),
                             new CodeInstruction(OpCodes.Ldarg_0),
