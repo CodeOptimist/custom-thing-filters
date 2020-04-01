@@ -19,7 +19,8 @@ namespace CustomThingFilters
             }
 
             public static void DefsLoaded(Harmony harmony) {
-                if (fixFilteredProductStackCounts) {
+                // AlexTD fixed this same bug
+                if (fixFilteredProductStackCounts.Value && !ModLister.HasActiveModWithName("TD Enhancement Pack")) {
                     harmony.Patch(
                         AccessTools.Method(typeof(RecipeWorkerCounter), nameof(RecipeWorkerCounter.CountValidThings)),
                         transpiler: new HarmonyMethod(typeof(Patch_BugFixes), nameof(ProductStackCounts)));

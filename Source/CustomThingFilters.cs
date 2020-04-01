@@ -13,12 +13,19 @@ namespace CustomThingFilters
 {
     partial class CustomThingFilters : ModBase
     {
+        static string modIdentifier;
         static readonly List<StatThingInfo> statThingInfos = new List<StatThingInfo>();
         static SettingHandle<bool> fixFilteredProductStackCounts;
 
         public override void DefsLoaded() {
-            SettingHandle<T> GetSettingHandle<T>(string settingName, T defaultValue) {
-                return Settings.GetHandle(settingName, $"COCTF_{settingName}_SettingTitle".Translate(), $"COCTF_{settingName}_SettingDesc".Translate(), defaultValue);
+            modIdentifier = ModContentPack.PackageIdPlayerFacing;
+
+            SettingHandle<T> GetSettingHandle<T>(string settingName, T defaultValue = default, SettingHandle.ValueIsValid validator = default,
+                SettingHandle.ShouldDisplay shouldDisplay = default, string enumPrefix = default) {
+                var settingHandle = Settings.GetHandle(
+                    settingName, $"{modIdentifier}_SettingTitle_{settingName}".Translate(), $"{modIdentifier}_SettingDesc_{settingName}".Translate(), defaultValue, validator, enumPrefix);
+                settingHandle.VisibilityPredicate = shouldDisplay;
+                return settingHandle;
             }
 
             fixFilteredProductStackCounts = GetSettingHandle("fixFilteredProductStackCounts", true);
