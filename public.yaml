@@ -7,12 +7,7 @@ supportedVersions:
   - 1.0
   - 1.1
 intro: |-
-  Filter things by base or current stat (more later).
-header: |+
-  
-  
-  [h1]Custom Thing Filters[/h1]
-  
+  Filter things by base or current stat (more later). 
 footer: |+
 
 
@@ -37,24 +32,20 @@ features:
 
 - at: 2.0.0
   desc: |-
-    Fixed scrollbars.
+    [b]Fixed scrollbars.[/b]
     Finally a proper release!
-    Join the Discord if you'd like to share your thoughts or chat: https://discord.gg/pnZGQAN
 
 - title: Text field input.
   at: 2.0.0
   desc: |-
     Because sliders are too imprecise for some ranges.
-  news: |-
-    [i]Thanks @Rampart and @Aaronthelemon.[/i]
     
 - title: Filter by property existence.
   at: 2.0.0
   desc: |-
-    Unless you mark them [b]R[/b]equired, filters only apply to items with the property (e.g. stat).
-    [i]Sometimes you want [/i]only[i] flammables and other times you want to limit flammability.[/i]
-  news: |-
-    [i]Thanks @ZzZombo and @XXX_420_Bad_Boy.[/i]
+    Mark a filter [b]R[/b]equired if a thing [i]must[/i] have the stat to be included.
+    Otherwise the stat is filtered when it exists, and ignored otherwise.
+    [i]Sometimes you want [b]only[/b] flammables and other times you want to limit flammability.[/i]
 
 - title: Performance.
   at: 1.0.0
@@ -64,11 +55,10 @@ features:
 - title: Fix vanilla filtered product stack counts.
   at: 1.0.0
   desc: |-
-    Fixes a vanilla bug(?) where stack counts are ignored as soon as a product count filter (e.g. hitpoints, quality) is applied in the "Do until X" section of a bill. [b]Enabling requires restart.[/b]
+    Fixes a vanilla bug where stack counts are ignored as soon as a product count filter (e.g. hitpoints, quality) is applied in the "Do until X" section of a bill. [b]Enabling requires restart.[/b]
   settings:
     - name: fixFilteredProductStackCounts
 
 - at: 1.1.0
   desc: |-
     Can now filter by either [i]base stat[/i] or [i]current stat[/i].
-    |img:Things/Mote/BattleSymbols/Downed|caption:Be aware existing filters have become "current stat" filters!
