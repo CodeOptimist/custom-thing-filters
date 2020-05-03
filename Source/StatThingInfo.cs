@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -20,6 +21,9 @@ namespace CustomThingFilters
             static readonly List<StatDef> needThingStats = new[] {
                 "RangedWeapon_LongDPS", "RangedWeapon_MediumDPS", "RangedWeapon_ShortDPS", "RangedWeapon_TouchDPS"
             }.Select(DefDatabase<StatDef>.GetNamedSilentFail).Where(x => x != null).ToList();
+
+            static readonly List<Assembly> ceAssemblies = LoadedModManager.RunningMods.SingleOrDefault(x => x.PackageIdPlayerFacing == "CETeam.CombatExtended")?.assemblies.loadedAssemblies;
+            static readonly Type CeToolCeType = ceAssemblies?.Select(x => x.GetType("CombatExtended.ToolCE")).SingleOrDefault(x => x != null);
 
             public readonly float max;
             public readonly float min;
@@ -64,6 +68,10 @@ namespace CustomThingFilters
 
                 foreach (var thingDef in DefDatabase<ThingDef>.AllDefsListForReading) {
                     if (!statDef.Worker.ShouldShowFor(StatRequest.For(thingDef, null)))
+                        continue;
+
+                    // https://github.com/CombatExtendedRWMod/CombatExtended/blob/7768f94edae4ffffdce16cb3bb7b10db0e541a79/Source/CombatExtended/CombatExtended/StatWorkers/StatWorker_MeleeDamageAverage.cs#L31
+                    if (CeToolCeType != null && thingDef.tools != null && thingDef.tools.Any(x => x.GetType() != CeToolCeType))
                         continue;
                     var value = thingDef.GetStatValueAbstract(statDef);
                     if (Mathf.Approximately(value, statDef.hideAtValue))
