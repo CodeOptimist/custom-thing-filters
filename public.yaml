@@ -59,6 +59,10 @@ features:
   settings:
     - name: fixFilteredProductStackCounts
 
+- at: 2.0.3
+  desc: |-
+    Fixed loading of filter ranges (broke in v2.0).
+
 - at: 1.1.0
   desc: |-
     Can now filter by either [i]base stat[/i] or [i]current stat[/i].

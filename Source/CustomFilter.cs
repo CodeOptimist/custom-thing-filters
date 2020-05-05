@@ -45,7 +45,7 @@ namespace CustomThingFilters
                         if (world.dataVersion == "") range.isRequired = true; // preserve behavior
 
                         // don't save unchanged ranges, it isn't meaningful because mods can affect the min/max of thingdefs
-                        if (!range.AtDefault())
+                        if (Scribe.mode != LoadSaveMode.Saving || !range.AtDefault())
                             Scribe_Values.Look(ref range.inner, $"{saveLabel}_range", new FloatRange(-9999999f, -9999999f));
                     }
                 }
