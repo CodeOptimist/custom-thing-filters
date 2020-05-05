@@ -69,6 +69,10 @@ namespace CustomThingFilters
                 return (FilterRange) MemberwiseClone();
             }
 
+            public override string ToString() {
+                return $"{saveLabel} {toStringStyle} {min} {max} {inner.min} {inner.max}";
+            }
+
             public bool IsAllowed(Thing thing) {
                 return isAllowed(this, thing);
             }

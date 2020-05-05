@@ -6,6 +6,7 @@ using System.Reflection;
 using RimWorld;
 using UnityEngine;
 using Verse;
+// ReSharper disable once RedundantUsingDirective
 using Debug = System.Diagnostics.Debug;
 
 namespace CustomThingFilters
@@ -84,7 +85,7 @@ namespace CustomThingFilters
                 }
 
                 if (min == null || float.IsNaN((float) min) || min.Equals(max)) return null;
-                Debug.WriteLine($"{statDef} \"{statDef.label}\" {min} {max} {statDef.toStringStyle} \"{string.Join(", ", thingDefValues.Select(x => x.ToString()).ToArray())}\"");
+                //Debug.WriteLine($"{statDef} \"{statDef.label}\" {min} {max} {statDef.toStringStyle} \"{string.Join(", ", thingDefValues.Select(x => x.ToString()).ToArray())}\"");
 
                 if (statDef.toStringStyle == default && !explicitlyIntegers.Contains(statDef) && foundFraction)
                     statDef.toStringStyle = ToStringStyle.FloatTwo;
