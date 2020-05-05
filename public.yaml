@@ -62,6 +62,7 @@ features:
 - at: 2.0.3
   desc: |-
     Fixed loading of filter ranges (broke in v2.0).
+    Button (✔) now lists filters changed from default for easy re-activation.
 
 - at: 1.1.0
   desc: |-

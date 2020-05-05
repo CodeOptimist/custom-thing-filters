@@ -39,9 +39,9 @@ namespace CustomThingFilters
                     CustomThingFilters.InsertCode(ref i, ref codes, ref newCodes, offset, when, what, bringLabels);
                 }
 
-                static bool HasActiveNonDefaultOrReqFilters(Bill_Production bill) {
+                static bool HasActiveNonDefaultFilters(Bill_Production bill) {
                     if (Find.World.GetComponent<MyWorldComponent>().billTargetCountCustomFilters.TryGetValue(bill, out var customFilter))
-                        return customFilter.ActiveFilterRanges.Any(x => !x.AtDefault() || x.isRequired);
+                        return customFilter.ActiveFilterRanges.Any(x => !x.AtDefault());
                     return false;
                 }
 
@@ -56,7 +56,7 @@ namespace CustomThingFilters
                         () => codes[i].LoadsField(AccessTools.Field(typeof(Bill_Production), nameof(Bill_Production.hpRange)), true),
                         () => new List<CodeInstruction> {
                             new CodeInstruction(OpCodes.Ldarg_1),
-                            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RecipeWorkerCounter_CountProducts_Patch), nameof(HasActiveNonDefaultOrReqFilters))),
+                            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RecipeWorkerCounter_CountProducts_Patch), nameof(HasActiveNonDefaultFilters))),
                             new CodeInstruction(OpCodes.Brtrue, codes[i + 3].operand),
                         });
 

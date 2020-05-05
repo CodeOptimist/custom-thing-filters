@@ -49,12 +49,11 @@ namespace CustomThingFilters
                     } else if (Scribe.mode == LoadSaveMode.Saving) {
                         // I decided having the data version elsewhere in the save is enough; readability counts
                         label = range.saveLabel;
-                        var hasDefaults = range.AtDefault() && !range.isActive && !range.isRequired;
-                        if (hasDefaults) continue;
+                        if (range.AtDefault()) continue;
                     }
 
                     // don't save unchanged ranges, it isn't meaningful because mods can affect the min/max of thingdefs
-                    if (Scribe.mode != LoadSaveMode.Saving || !range.AtDefault())
+                    if (Scribe.mode != LoadSaveMode.Saving || !range.InnerAtDefault())
                         Scribe_Values.Look(ref range.inner, $"{label}_range", new FloatRange(-9999999f, -9999999f));
 
                     Scribe_Values.Look(ref range.isActive, $"{label}_isActive", forceSave: true);
@@ -97,9 +96,9 @@ namespace CustomThingFilters
                 if (Widgets.ButtonText(new Rect(rect.x + rect.width * 3 / 8, rect.y, rect.width * 3 / 8, rect.height), "Stat (Final)"))
                     MenuFromRanges(filterRanges.OfType<FinalStatFilterRange>(), "Filter by the Final value of a stat", Active, x => x.menuLabel(x));
                 if (Widgets.ButtonText(new Rect(rect.x + rect.width * 6 / 8, rect.y, rect.width * 1 / 8, rect.height), "✔"))
-                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive), "Change active filters", Active, x => x.widgetLabel(x));
+                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => !x.AtDefault()), "Change active filters", Active, x => x.widgetLabel(x));
                 if (Widgets.ButtonText(new Rect(rect.x + rect.width * 7 / 8, rect.y, rect.width * 1 / 8, rect.height), "☰"))
-                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive), "Require (!) stat to exist on thing", Required, x => x.widgetLabel(x));
+                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => !x.AtDefault()), "Require (!) stat to exist on thing", Required, x => x.widgetLabel(x));
 
                 Text.Font = font;
             }
