@@ -7,7 +7,7 @@ supportedVersions:
   - 1.0
   - 1.1
 intro: |-
-  Filter things by base or current stat (more later). 
+  Filter things by Base or Final stat values (more later).
 footer: |+
 
 
@@ -43,7 +43,7 @@ features:
 - title: Filter by property existence.
   at: 2.0.0
   desc: |-
-    Mark a filter [b]R[/b]equired if a thing [i]must[/i] have the stat to be included.
+    Mark a filter required if a thing [i]must[/i] have the stat to be included.
     Otherwise the stat is filtered when it exists, and ignored otherwise.
     [i]Sometimes you want [b]only[/b] flammables and other times you want to limit flammability.[/i]
 
@@ -65,4 +65,4 @@ features:
 
 - at: 1.1.0
   desc: |-
-    Can now filter by either [i]base stat[/i] or [i]current stat[/i].
+    Can now filter by either [i]base stat[/i] or [i]final stat[/i].

@@ -69,7 +69,8 @@ namespace CustomThingFilters
             public static readonly Dictionary<string, List<(string find, string replace)>> releaseNewToOldLabels = new Dictionary<string, List<(string, string)>>();
 
             static readonly List<(List<string> releaseRange, List<(string pattern, string replacement)>)> newToOldLabels = new List<(List<string>, List<(string, string)>)> {
-                (releases.GetRange(0, 1), new List<(string pattern, string replacement)> {("^allowedCur", "allowed")}),
+                (releases.GetRange(0, 1), new List<(string pattern, string replacement)> {("^allowedFinal", "allowed")}),
+                (releases.GetRange(1, 4), new List<(string pattern, string replacement)> {("^allowedFinal", "allowedCur")}),
             };
 
             public readonly Dictionary<Bill, CustomFilter> billCustomFilters = new Dictionary<Bill, CustomFilter>();

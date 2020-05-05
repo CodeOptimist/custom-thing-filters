@@ -21,18 +21,18 @@ namespace CustomThingFilters
             public BaseStatFilterRange(StatThingInfo info) : base(
                 info,
                 $"allowedBase{info.statDef.defName}",
-                x => $"(B{(x.isRequired ? "*" : "")}) {info.statDef.label}",
+                x => $"{(x.isRequired ? "(!) " : "")}B. {info.statDef.label}",
                 x => $"<i>{info.statDef.category.label}:</i> {info.statDef.label}",
                 (range, thing) => !info.thingDefValues.ContainsKey(thing.def) && !range.isRequired || info.thingDefValues.TryGetValue(thing.def, out var value) && range.Includes(value)) {
             }
         }
 
-        public class CurStatFilterRange : StatFilterRange
+        public class FinalStatFilterRange : StatFilterRange
         {
-            public CurStatFilterRange(StatThingInfo info) : base(
+            public FinalStatFilterRange(StatThingInfo info) : base(
                 info,
-                $"allowedCur{info.statDef.defName}",
-                x => $"(C{(x.isRequired ? "*" : "")}) {info.statDef.label}",
+                $"allowedFinal{info.statDef.defName}",
+                x => $"{(x.isRequired ? "(!) " : "")}F. {info.statDef.label}",
                 x => $"<i>{info.statDef.category.label}:</i> {info.statDef.label}",
                 (range, thing) => !info.thingDefValues.ContainsKey(thing.def) && !range.isRequired || info.thingDefValues.ContainsKey(thing.def) && range.Includes(thing.GetStatValue(info.statDef))) {
             }

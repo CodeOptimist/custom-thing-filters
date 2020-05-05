@@ -20,7 +20,7 @@ namespace CustomThingFilters
             public CustomFilter() {
                 foreach (var info in statThingInfos) {
                     filterRanges.Add(new BaseStatFilterRange(info));
-                    filterRanges.Add(new CurStatFilterRange(info));
+                    filterRanges.Add(new FinalStatFilterRange(info));
                 }
             }
 
@@ -92,14 +92,14 @@ namespace CustomThingFilters
                     return range.isRequired;
                 }
 
-                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 0 / 8, rect.y, rect.width * 3 / 8, rect.height), "Base stat"))
-                    MenuFromRanges(filterRanges.OfType<BaseStatFilterRange>(), "Base stat filters", Active, x => x.menuLabel(x));
-                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 3 / 8, rect.y, rect.width * 1 / 8, rect.height), "A"))
-                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive), "Active stat filters", Active, x => x.widgetLabel(x));
-                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 4 / 8, rect.y, rect.width * 1 / 8, rect.height), "R"))
-                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive), "Required stats", Required, x => x.widgetLabel(x));
-                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 5 / 8, rect.y, rect.width * 3 / 8, rect.height), "Cur. stat"))
-                    MenuFromRanges(filterRanges.OfType<CurStatFilterRange>(), "Current stat filters", Active, x => x.menuLabel(x));
+                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 0 / 8, rect.y, rect.width * 3 / 8, rect.height), "Stat (Base)"))
+                    MenuFromRanges(filterRanges.OfType<BaseStatFilterRange>(), "Filter by the Base value of a stat", Active, x => x.menuLabel(x));
+                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 3 / 8, rect.y, rect.width * 3 / 8, rect.height), "Stat (Final)"))
+                    MenuFromRanges(filterRanges.OfType<FinalStatFilterRange>(), "Filter by the Final value of a stat", Active, x => x.menuLabel(x));
+                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 6 / 8, rect.y, rect.width * 1 / 8, rect.height), "✔"))
+                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive), "Change active filters", Active, x => x.widgetLabel(x));
+                if (Widgets.ButtonText(new Rect(rect.x + rect.width * 7 / 8, rect.y, rect.width * 1 / 8, rect.height), "☰"))
+                    MenuFromRanges(filterRanges.OfType<StatFilterRange>().Where(x => x.isActive), "Require (!) stat to exist on thing", Required, x => x.widgetLabel(x));
 
                 Text.Font = font;
             }

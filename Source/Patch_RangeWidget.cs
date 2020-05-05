@@ -117,14 +117,14 @@ namespace CustomThingFilters
                     fieldRect.yMin += 4f;
                     if (TryToFloatByStyle(Widgets.TextField(fieldRect, range.min.ToStringByStyle(valueStyle)), out var inputMin, valueStyle)) {
                         range.min = inputMin;
-                        if (filterRangeTypeToDraw != typeof(CurStatFilterRange) && range.min < min) range.min = min;
+                        if (filterRangeTypeToDraw != typeof(FinalStatFilterRange) && range.min < min) range.min = min;
                         if (range.max < range.min) range.max = range.min;
                     }
 
                     var maxFieldRect = new Rect(fieldRect) {x = fieldRect.x + rect.width - fieldRect.width};
                     if (TryToFloatByStyle(Widgets.TextField(maxFieldRect, range.max.ToStringByStyle(valueStyle)), out var inputMax, valueStyle)) {
                         range.max = inputMax;
-                        if (filterRangeTypeToDraw != typeof(CurStatFilterRange) && range.max > max) range.max = max;
+                        if (filterRangeTypeToDraw != typeof(FinalStatFilterRange) && range.max > max) range.max = max;
                         if (range.min > range.max) range.min = range.max;
                     }
 
