@@ -7,6 +7,8 @@ using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
+// ReSharper disable once RedundantUsingDirective
+using Debug = System.Diagnostics.Debug;
 
 namespace CustomThingFilters
 {
@@ -63,12 +65,16 @@ namespace CustomThingFilters
         {
             static readonly string curDataVersion;
 
-            public static readonly Dictionary<string, Dictionary<string, string>> newToOldLabels = new Dictionary<string, Dictionary<string, string>> {
-                {"", new Dictionary<string, string> {{"^allowedCur", "allowed"}}}
+            static readonly List<string> releases = new List<string> {"", "1_1_1", "2_0_0", "2_0_1", "2_0_2", "2_0_3"};
+            public static readonly Dictionary<string, List<(string find, string replace)>> releaseNewToOldLabels = new Dictionary<string, List<(string, string)>>();
+
+            static readonly List<(List<string> releaseRange, List<(string pattern, string replacement)>)> newToOldLabels = new List<(List<string>, List<(string, string)>)> {
+                (releases.GetRange(0, 1), new List<(string pattern, string replacement)> {("^allowedCur", "allowed")}),
             };
 
             public readonly Dictionary<Bill, CustomFilter> billCustomFilters = new Dictionary<Bill, CustomFilter>();
             public readonly Dictionary<Bill, CustomFilter> billTargetCountCustomFilters = new Dictionary<Bill, CustomFilter>();
+
             public readonly Dictionary<StorageSettings, CustomFilter> storageSettingsCustomFilters = new Dictionary<StorageSettings, CustomFilter>();
             public readonly Dictionary<ThingFilter, CustomFilter> thingFilterCustomFilters = new Dictionary<ThingFilter, CustomFilter>();
             public string dataVersion;
@@ -76,6 +82,10 @@ namespace CustomThingFilters
             static MyWorldComponent() {
                 curDataVersion = typeof(CustomThingFilters).Assembly.GetName().Version.ToString();
                 curDataVersion = curDataVersion.Substring(0, curDataVersion.LastIndexOf(".", StringComparison.Ordinal)).Replace(".", "_");
+
+                foreach (var (releaseRange, substitutions) in newToOldLabels)
+                foreach (var release in releaseRange)
+                    releaseNewToOldLabels.Add(release, substitutions);
             }
 
             public MyWorldComponent(World world) : base(world) {

@@ -40,9 +40,9 @@ namespace CustomThingFilters
                         var verPrefix = world.dataVersion.EndsWith("_") ? $"COCTF_{world.dataVersion}" : world.dataVersion == "" ? "COCTF_" : "";
                         label = range.saveLabel;
                         // substitute in old data names for compatibility
-                        if (MyWorldComponent.newToOldLabels.TryGetValue(world.dataVersion.TrimEnd('_'), out var subs)) {
-                            foreach (var sub in subs)
-                                label = Regex.Replace(label, sub.Key, sub.Value);
+                        if (MyWorldComponent.releaseNewToOldLabels.TryGetValue(world.dataVersion.TrimEnd('_'), out var subs)) {
+                            foreach (var (pattern, replacement) in subs)
+                                label = Regex.Replace(label, pattern, replacement);
                         }
 
                         label = verPrefix + label;
