@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using Verse;
+// ReSharper disable once RedundantUsingDirective
+using Debug = System.Diagnostics.Debug;
 
 namespace CustomThingFilters
 {
@@ -27,27 +29,38 @@ namespace CustomThingFilters
             }
 
             public void ExposeData() {
+                if (Scribe.mode != LoadSaveMode.LoadingVars && Scribe.mode != LoadSaveMode.Saving)
+                    return;
+
                 var world = Find.World.GetComponent<MyWorldComponent>();
                 foreach (var range in filterRanges) {
-                    var saveLabel = "COCTF_" + MyWorldComponent.modVersion + "_" + range.saveLabel;
-                    // handle data renames between versions for compatibility
-                    if (Scribe.mode != LoadSaveMode.Saving) {
-                        if (MyWorldComponent.versionCompatibilityLabelMap.TryGetValue(world.dataVersion, out var dict)) {
-                            foreach (var sub in dict)
-                                saveLabel = Regex.Replace(saveLabel, $"^COCTF_{MyWorldComponent.modVersion}_" + sub.Key, $"COCTF_{world.dataVersion}" + sub.Value);
+                    var label = "";
+
+                    if (Scribe.mode == LoadSaveMode.LoadingVars) {
+                        var verPrefix = world.dataVersion.EndsWith("_") ? $"COCTF_{world.dataVersion}" : world.dataVersion == "" ? "COCTF_" : "";
+                        label = range.saveLabel;
+                        // substitute in old data names for compatibility
+                        if (MyWorldComponent.newToOldLabels.TryGetValue(world.dataVersion.TrimEnd('_'), out var subs)) {
+                            foreach (var sub in subs)
+                                label = Regex.Replace(label, sub.Key, sub.Value);
                         }
+
+                        label = verPrefix + label;
+                    } else if (Scribe.mode == LoadSaveMode.Saving) {
+                        // I decided having the data version elsewhere in the save is enough; readability counts
+                        label = range.saveLabel;
+                        var hasDefaults = range.AtDefault() && !range.isActive && !range.isRequired;
+                        if (hasDefaults) continue;
                     }
 
-                    var hasDefaults = !range.isActive && !range.isRequired && range.AtDefault();
-                    if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.Saving && !hasDefaults) {
-                        Scribe_Values.Look(ref range.isActive, $"{saveLabel}_isActive", forceSave: true);
-                        Scribe_Values.Look(ref range.isRequired, $"{saveLabel}_isRequired", forceSave: true);
-                        if (world.dataVersion == "") range.isRequired = true; // preserve behavior
+                    // don't save unchanged ranges, it isn't meaningful because mods can affect the min/max of thingdefs
+                    if (Scribe.mode != LoadSaveMode.Saving || !range.AtDefault())
+                        Scribe_Values.Look(ref range.inner, $"{label}_range", new FloatRange(-9999999f, -9999999f));
 
-                        // don't save unchanged ranges, it isn't meaningful because mods can affect the min/max of thingdefs
-                        if (Scribe.mode != LoadSaveMode.Saving || !range.AtDefault())
-                            Scribe_Values.Look(ref range.inner, $"{saveLabel}_range", new FloatRange(-9999999f, -9999999f));
-                    }
+                    Scribe_Values.Look(ref range.isActive, $"{label}_isActive", forceSave: true);
+                    Scribe_Values.Look(ref range.isRequired, $"{label}_isRequired", forceSave: true);
+                    if (Scribe.mode == LoadSaveMode.LoadingVars && !range.AtDefault() && world.dataVersion == "")
+                        range.isRequired = true; // preserve behavior of first mod version
                 }
             }
 

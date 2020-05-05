@@ -78,7 +78,11 @@ namespace CustomThingFilters
             }
 
             public bool AtDefault() {
-                return Mathf.Approximately(inner.min, min) && Mathf.Approximately(inner.max, max);
+                // ReSharper disable CompareOfFloatsByEqualityOperator
+                var notSet = inner.min == -9999999f && inner.max == -9999999f;
+                // ReSharper restore CompareOfFloatsByEqualityOperator
+                var notChanged = Mathf.Approximately(inner.min, min) && Mathf.Approximately(inner.max, max);
+                return notSet || notChanged;
             }
 
             public bool Includes(float val) {

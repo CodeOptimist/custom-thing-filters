@@ -61,10 +61,10 @@ namespace CustomThingFilters
 
         class MyWorldComponent : WorldComponent
         {
-            public static string modVersion;
+            static readonly string curDataVersion;
 
-            public static readonly Dictionary<string, Dictionary<string, string>> versionCompatibilityLabelMap = new Dictionary<string, Dictionary<string, string>> {
-                {"", new Dictionary<string, string> {{"allowedCur", "allowed"}}}
+            public static readonly Dictionary<string, Dictionary<string, string>> newToOldLabels = new Dictionary<string, Dictionary<string, string>> {
+                {"", new Dictionary<string, string> {{"^allowedCur", "allowed"}}}
             };
 
             public readonly Dictionary<Bill, CustomFilter> billCustomFilters = new Dictionary<Bill, CustomFilter>();
@@ -73,13 +73,17 @@ namespace CustomThingFilters
             public readonly Dictionary<ThingFilter, CustomFilter> thingFilterCustomFilters = new Dictionary<ThingFilter, CustomFilter>();
             public string dataVersion;
 
+            static MyWorldComponent() {
+                curDataVersion = typeof(CustomThingFilters).Assembly.GetName().Version.ToString();
+                curDataVersion = curDataVersion.Substring(0, curDataVersion.LastIndexOf(".", StringComparison.Ordinal)).Replace(".", "_");
+            }
+
             public MyWorldComponent(World world) : base(world) {
-                modVersion = typeof(CustomThingFilters).Assembly.GetName().Version.ToString();
-                modVersion = modVersion.Substring(0, modVersion.LastIndexOf(".", StringComparison.Ordinal)).Replace(".", "_");
             }
 
             public override void ExposeData() {
-                dataVersion = modVersion + "_";
+                if (Scribe.mode == LoadSaveMode.Saving)
+                    dataVersion = curDataVersion;
                 Scribe_Values.Look(ref dataVersion, "version");
             }
 
