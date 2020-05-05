@@ -30,11 +30,6 @@ features:
   desc: |-
     [i]Sculpture not pretty enough? Make another![/i]
 
-- at: 2.0.0
-  desc: |-
-    [b]Fixed scrollbars.[/b]
-    Finally a proper release!
-
 - title: Text field input.
   at: 2.0.0
   desc: |-
@@ -63,6 +58,11 @@ features:
   desc: |-
     Fixed loading of filter ranges (broke in v2.0).
     Button (✔) now lists filters changed from default for easy re-activation.
+
+- at: 2.0.0
+  desc: |-
+    [b]Fixed scrollbars.[/b]
+    Finally a proper release!
 
 - at: 1.1.0
   desc: |-
